@@ -23,6 +23,11 @@
 import Foundation
 import CoreGraphics
 
+/**
+    The name of fonts should be FontName-Weight.tff
+    A regular Roboto font may be RobotoFont-Regular.tff
+    It can be used the FontProvider to load fonts.
+*/
 public protocol FontType: RawRepresentable where RawValue == String {
 }
 
