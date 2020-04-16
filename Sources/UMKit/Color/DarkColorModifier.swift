@@ -82,7 +82,7 @@ extension DarkColorModifier {
 extension DarkColorModifier {
 
     public var components: UMColor.Components {
-        let components = self.color.components
+        let components = self.frozedComponent
 
         guard components.isGrayScale else {
             let offset = self.rgbOffset ?? self.offset
