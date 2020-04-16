@@ -130,7 +130,7 @@ extension FontFactory {
         return "\(self.fontType.rawValue).w\(self.weight ?? .regular).styled.\(style)"
     }
 
-    public var font: UMFont? {
+    public var font: UMFont! {
         if let font = FontCache.shared[self.fontKey] {
             return font
         }
