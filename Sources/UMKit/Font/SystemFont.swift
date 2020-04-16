@@ -27,6 +27,7 @@ public enum SystemFont: String, FontType {
     case bold
     case regular
     case thin
+    case medium
 }
 
 extension SystemFont {
@@ -38,6 +39,8 @@ extension SystemFont {
             return .regular
         case .thin:
             return .thin
+        case .medium:
+            return .medium
         }
     }
 
