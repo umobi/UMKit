@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "UMKit",
     platforms: [
-        .iOS(.v10), .tvOS(.v10)
+        .iOS(.v10), .tvOS(.v10), .watchOS(.v4)
     ],
     products: [
         // Products define the executables and libraries produced by a package, and make them visible to other packages.

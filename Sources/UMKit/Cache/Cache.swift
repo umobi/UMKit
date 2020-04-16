@@ -29,6 +29,8 @@ public class Cache<Key, Object> where Object: Cachable, Object.CacheKey == Key {
 
     private(set) var cachedItens: [Key: Weak] = [:]
 
+    public init() {}
+
     public subscript(_ key: Key) -> Object? {
         self.cachedItens[key]?.object
     }

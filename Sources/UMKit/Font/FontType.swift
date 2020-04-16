@@ -23,7 +23,7 @@
 import Foundation
 import CoreGraphics
 
-protocol FontType: RawRepresentable where RawValue == String {
+public protocol FontType: RawRepresentable where RawValue == String {
 }
 
 extension FontType {
@@ -32,7 +32,7 @@ extension FontType {
     }
 }
 
-extension FontType {
+public extension FontType {
     func style(_ style: FontStyle) -> FontFactory<Self> {
         FontFactory(font: self)
             .style(style)

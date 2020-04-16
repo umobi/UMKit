@@ -23,11 +23,11 @@
 import Foundation
 import CoreGraphics
 
-struct FontFrozen {
-    let fontType: String
-    let weight: FontWeight?
-    let style: FontStyle?
-    let size: CGFloat?
-    let bundle: Bundle?
-    let filename: String?
+public struct FontFrozen {
+    public let fontType: String
+    public let weight: FontWeight?
+    public let style: FontStyle?
+    public let size: CGFloat?
+    public let bundle: Bundle?
+    public let filename: String?
 }

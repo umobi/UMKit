@@ -23,4 +23,4 @@
 import Foundation
 import UIKit
 
-typealias FontWeight = UIFont.Weight
+public typealias FontWeight = UMFont.Weight

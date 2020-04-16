@@ -23,6 +23,6 @@
 import Foundation
 import CoreGraphics
 
-protocol FontStyleSized {
+public protocol FontStyleSized {
     var baseSize: CGFloat { get }
 }

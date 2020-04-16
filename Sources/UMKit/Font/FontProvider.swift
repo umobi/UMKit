@@ -23,6 +23,6 @@
 import Foundation
 import UIKit
 
-protocol FontProvider {
-    func loadFont(_ fontMaker: FontFrozen) -> UIFont?
+public protocol FontProvider {
+    func loadFont(_ fontMaker: FontFrozen) -> UMFont?
 }

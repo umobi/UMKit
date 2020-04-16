@@ -24,13 +24,13 @@ import Foundation
 import UIKit
 
 class FontCache {
-    private static weak var weakShared: Cache<String, UIFont>!
-    static var shared: Cache<String, UIFont> {
+    private static weak var weakShared: Cache<String, UMFont>!
+    static var shared: Cache<String, UMFont> {
         if let shared = self.weakShared {
             return shared
         }
 
-        let shared = Cache<String, UIFont>()
+        let shared = Cache<String, UMFont>()
         self.weakShared = shared
         return shared
     }

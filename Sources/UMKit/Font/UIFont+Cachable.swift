@@ -23,6 +23,6 @@
 import Foundation
 import UIKit
 
-extension UIFont: Cachable {
+extension UMFont: Cachable {
     public typealias CacheKey = String
 }
