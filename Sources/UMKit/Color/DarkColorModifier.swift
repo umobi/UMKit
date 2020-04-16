@@ -9,20 +9,31 @@ import Foundation
 import CoreGraphics
 
 public struct DarkColorModifier<Color: ColorType>: ColorModifierType {
-    let color: Color
+    let frozedComponent: UMColor.Components
     let offset: CGFloat
     let rgbOffset: CGFloat?
     let grayOffset: CGFloat?
 
-    public init(color: Color) {
-        self.color = color
+    public init(_ color: Color) {
+        self.frozedComponent = color.components
+        self.offset = 0
+        self.rgbOffset = nil
+        self.grayOffset = nil
+    }
+
+    public init?(hex: String) {
+        guard let components = UMColor.Components(hex: hex) else {
+            return nil
+        }
+
+        self.frozedComponent = components
         self.offset = 0
         self.rgbOffset = nil
         self.grayOffset = nil
     }
 
     private init(_ original: DarkColorModifier<Color>, editable: Editable) {
-        self.color = original.color
+        self.frozedComponent = original.frozedComponent
         self.offset = editable.offset
         self.rgbOffset = editable.rgbOffset
         self.grayOffset = editable.grayOffset
