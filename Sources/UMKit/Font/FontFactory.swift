@@ -24,9 +24,9 @@ import Foundation
 import CoreGraphics
 import UIKit
 
-typealias UMFont = UIFont
+public typealias UMFont = UIFont
 
-struct FontFactory<Font: FontType> {
+public struct FontFactory<Font: FontType> {
     let fontType: Font
 
     let weight: FontWeight?
@@ -75,31 +75,31 @@ struct FontFactory<Font: FontType> {
         return .init(self, editable: editable)
     }
 
-    func style(_ style: FontStyle) -> Self {
+    public func style(_ style: FontStyle) -> Self {
         self.edit {
             $0.style = style
         }
     }
 
-    func size(_ size: CGFloat) -> Self {
+    public func size(_ size: CGFloat) -> Self {
         self.edit {
             $0.size = size
         }
     }
 
-    func weight(_ weight: FontWeight) -> Self {
+    public func weight(_ weight: FontWeight) -> Self {
         self.edit {
             $0.weight = weight
         }
     }
 
-    func bundle(_ bundle: Bundle) -> Self {
+    public func bundle(_ bundle: Bundle) -> Self {
         self.edit {
             $0.bundle = bundle
         }
     }
 
-    func filename(_ name: String) -> Self {
+    public func filename(_ name: String) -> Self {
         self.edit {
             $0.filename = name
         }
@@ -130,7 +130,7 @@ extension FontFactory {
         return "\(self.fontType.rawValue).w\(self.weight ?? .regular).styled.\(style)"
     }
 
-    var font: UIFont? {
+    public var font: UMFont? {
         if let font = FontCache.shared[self.fontKey] {
             return font
         }
@@ -149,15 +149,15 @@ extension FontFactory {
         FontLoader(self).loadIfNeeded()
         let name = fontName(self.fontType, weight: self.weight)
 
-        guard #available(iOS 11, *) else {
-            let font = UIFont(name: name, size: self.size ?? UIFont.systemFontSize)
+        guard #available(iOS 11, tvOS 11, watchOS 4, *) else {
+            let font = UMFont(name: name, size: self.size ?? UMFont.fontSize)
             FontCache.shared.addCache(for: self.fontKey, font)
             return font
         }
 
         if let style = self.style {
             let fontMetrics = UIFontMetrics(forTextStyle: style)
-            guard let tempFont = UIFont(name: name, size: style.baseSize) else {
+            guard let tempFont = UMFont(name: name, size: style.baseSize) else {
                 return nil
             }
 
@@ -166,7 +166,7 @@ extension FontFactory {
             return font
         }
 
-        let font = UIFont(name: name, size: self.size ?? UIFont.systemFontSize)
+        let font = UMFont(name: name, size: self.size ?? UMFont.fontSize)
         FontCache.shared.addCache(for: self.fontKey, font)
         return font
     }
@@ -189,5 +189,18 @@ func fontName<Font: FontType>(_ font: Font, weight: FontWeight?) -> String {
 extension String {
     func capitalizingFirstLetter() -> String {
         return prefix(1).uppercased() + self.lowercased().dropFirst()
+    }
+}
+
+
+public extension UMFont {
+    static var fontSize: CGFloat {
+        #if os(iOS)
+        return UMFont.systemFontSize
+        #elseif os(tvOS)
+        return 29
+        #elseif os(watchOS)
+        return 16
+        #endif
     }
 }

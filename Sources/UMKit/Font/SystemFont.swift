@@ -23,7 +23,7 @@
 import Foundation
 import UIKit
 
-enum SystemFont: String, FontType {
+public enum SystemFont: String, FontType {
     case bold
     case regular
     case thin
@@ -41,18 +41,18 @@ extension SystemFont {
         }
     }
 
-    func loadFont(_ fontMaker: FontFrozen) -> UIFont? {
+    func loadFont(_ fontMaker: FontFrozen) -> UMFont? {
         guard let this = SystemFont(rawValue: fontMaker.fontType) else {
             return nil
         }
 
         if let size = fontMaker.size {
-            return UIFont.systemFont(ofSize: size, weight: fontMaker.weight ?? this.weight)
+            return UMFont.systemFont(ofSize: size, weight: fontMaker.weight ?? this.weight)
         }
 
-        let font = UIFont.systemFont(ofSize: fontMaker.size ?? fontMaker.style?.baseSize ?? UIFont.systemFontSize, weight: fontMaker.weight ?? this.weight)
+        let font = UMFont.systemFont(ofSize: fontMaker.size ?? fontMaker.style?.baseSize ?? UMFont.fontSize, weight: fontMaker.weight ?? this.weight)
 
-        guard #available(iOS 11, *), let style = fontMaker.style else {
+        guard #available(iOS 11, tvOS 11, watchOS 4, *), let style = fontMaker.style else {
             return font
         }
 
@@ -60,3 +60,4 @@ extension SystemFont {
         return metrics.scaledFont(for: font)
     }
 }
+
