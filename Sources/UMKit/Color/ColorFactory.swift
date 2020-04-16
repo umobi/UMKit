@@ -8,15 +8,15 @@
 import Foundation
 import UIKit
 
-struct ColorFactory<Color: ColorType>: ColorFactoryType {
+public struct ColorFactory<Color: ColorType>: ColorFactoryType {
     let alpha: CGFloat
     let red: CGFloat
     let green: CGFloat
     let blue: CGFloat
-    let darkColor: UIColor.Components?
+    let darkColor: UMColor.Components?
 
     init(_ color: Color) {
-        guard let components = UIColor.Components.component(from: color.rawValue) else {
+        guard let components = UMColor.Components.component(from: color.rawValue) else {
             fatalError()
         }
 
@@ -27,7 +27,7 @@ struct ColorFactory<Color: ColorType>: ColorFactoryType {
         self.darkColor = nil
     }
 
-    init(_ components: UIColor.Components) {
+    init(_ components: UMColor.Components) {
         self.alpha = components.alpha
         self.red = components.red
         self.green = components.green
@@ -54,7 +54,7 @@ struct ColorFactory<Color: ColorType>: ColorFactoryType {
         var red: CGFloat
         var green: CGFloat
         var blue: CGFloat
-        var darkColor: UIColor.Components?
+        var darkColor: UMColor.Components?
 
         init(_ colorFactory: ColorFactory<Color>) {
             self.alpha = colorFactory.alpha
@@ -66,10 +66,19 @@ struct ColorFactory<Color: ColorType>: ColorFactoryType {
     }
 }
 
-extension ColorFactory {
+public extension ColorFactory {
     func alpha(_ alpha: CGFloat) -> Self {
         self.edit {
             $0.alpha = alpha
+
+            if let darkColor = $0.darkColor {
+                $0.darkColor = .init(
+                    red: darkColor.red,
+                    green: darkColor.green,
+                    blue: darkColor.blue,
+                    alpha: alpha
+                )
+            }
         }
     }
 
@@ -93,7 +102,7 @@ extension ColorFactory {
 }
 
 #if os(tvOS) || os(iOS)
-extension ColorFactory {
+public extension ColorFactory {
 
     func darkColor(_ color: Color) -> ColorFactory<Color> {
         self.edit {
@@ -114,7 +123,7 @@ extension ColorFactory {
     }
 }
 
-extension ColorFactory {
+public extension ColorFactory {
 
     func lightColor(_ color: Color) -> ColorFactory<Color> {
         ColorFactory<Color>(color.components)
@@ -133,7 +142,7 @@ extension ColorFactory {
 }
 #endif
 
-extension ColorFactory {
+public extension ColorFactory {
     func lighter(_ constant: CGFloat) -> ColorFactory<Color> {
         let components = self.components.lighter(with: constant)
 
@@ -155,31 +164,31 @@ extension ColorFactory {
     }
 }
 
-extension ColorFactory {
-    var components: UIColor.Components {
+public extension ColorFactory {
+    var components: UMColor.Components {
         .init(red: self.red, green: self.green, blue: self.blue, alpha: self.alpha)
     }
 }
 
-extension ColorFactory {
-    var color: UIColor {
-        let lightColor = self.components.color
+public extension ColorFactory {
+    var color: UMColor {
+        let lightColor = self.components
 
         #if os(iOS) || os(tvOS)
-            guard let darkColor = self.darkColor?.color, #available(iOS 13, tvOS 13, *) else {
-                return lightColor
+            guard let darkColor = self.darkColor, #available(iOS 13, tvOS 13, *) else {
+                return lightColor.color
             }
 
             return .init(dynamicProvider: {
                 switch $0.userInterfaceStyle {
                 case .dark:
-                    return darkColor
+                    return darkColor.color
                 default:
-                    return lightColor
+                    return lightColor.color
                 }
             })
         #else
-            return lightColor
+            return lightColor.color
         #endif
     }
 }

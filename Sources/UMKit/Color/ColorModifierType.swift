@@ -8,6 +8,6 @@
 import Foundation
 import UIKit
 
-protocol ColorModifierType: ColorFactoryType {
-    var components: UIColor.Components { get }
+public protocol ColorModifierType: ColorFactoryType {
+    var components: UMColor.Components { get }
 }

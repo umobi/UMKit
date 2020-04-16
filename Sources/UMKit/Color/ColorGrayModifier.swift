@@ -8,14 +8,14 @@
 import Foundation
 import UIKit
 
-struct ColorGrayModifier<Color: ColorType>: ColorModifierType {
+public struct ColorGrayModifier<Color: ColorType>: ColorModifierType {
     private let color: Color
 
-    init(_ color: Color) {
+    public init(_ color: Color) {
         self.color = color
     }
 
-    var components: UIColor.Components {
+    public var components: UMColor.Components {
         let components = self.color.components
 
         guard !components.isGrayScale else {

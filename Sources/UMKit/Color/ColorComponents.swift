@@ -8,14 +8,14 @@
 import Foundation
 import UIKit
 
-public extension UIColor {
+public extension UMColor {
     struct Components {
         public let red: CGFloat
         public let green: CGFloat
         public let blue: CGFloat
         public let alpha: CGFloat
 
-        public init(_ color: UIColor) {
+        public init(_ color: UMColor) {
             var red: CGFloat = 0
             var green: CGFloat = 0
             var blue: CGFloat = 0
@@ -42,7 +42,7 @@ public extension UIColor {
             })
         }
 
-        public var asColor: UIColor {
+        public var asColor: UMColor {
             return .init(red: self.red, green: self.green, blue: self.blue, alpha: self.alpha)
         }
 
@@ -56,7 +56,7 @@ public extension UIColor {
             let blue = (hash & 0x0000ff00) >> 8
             let alpha = (hash & 0x000000ff)
 
-            self.init(UIColor(
+            self.init(UMColor(
                 red: CGFloat(red) / 255.0,
                 green: CGFloat(green) / 255.0,
                 blue: CGFloat(blue) / 255.0,
@@ -72,17 +72,17 @@ public extension UIColor {
         }
     }
 
-    var components: UIColor.Components {
+    var components: UMColor.Components {
         return .init(self)
     }
 }
 
-public extension UIColor.Components {
+public extension UMColor.Components {
     private var maxColorInterval: (red: CGFloat, green: CGFloat, blue: CGFloat) {
         return (1 - self.red, 1 - self.green, 1 - self.blue)
     }
 
-    func lighter(with constant: CGFloat) -> UIColor.Components {
+    func lighter(with constant: CGFloat) -> UMColor.Components {
         let max = self.maxColorInterval
         return .init(
             red: self.red + (max.red * constant),
@@ -92,7 +92,7 @@ public extension UIColor.Components {
         )
     }
 
-    func darker(with constant: CGFloat) -> UIColor.Components {
+    func darker(with constant: CGFloat) -> UMColor.Components {
         return .init(
             red: self.red - (self.red * constant),
             green: self.green - (self.green * constant),
@@ -101,13 +101,13 @@ public extension UIColor.Components {
         )
     }
 
-    func alpha(constant alpha: CGFloat) -> UIColor.Components {
+    func alpha(constant alpha: CGFloat) -> UMColor.Components {
         return .init(red: self.red, green: self.green, blue: self.blue, alpha: alpha)
     }
 }
 
-public extension UIColor.Components {
-    static func component(from hex: String) -> UIColor.Components? {
+public extension UMColor.Components {
+    static func component(from hex: String) -> UMColor.Components? {
         guard hex.hasPrefix("#") && hex.count >= 7 else {
             return nil
         }
@@ -166,7 +166,7 @@ public extension UIColor.Components {
     }
 }
 
-extension UIColor {
+public extension UMColor {
     convenience init?(hex: String) {
         guard let component = Components.component(from: hex) else {
             return nil
@@ -176,8 +176,20 @@ extension UIColor {
     }
 }
 
-extension UIColor.Components {
-    var color: UIColor {
-        .init(red: self.red, green: self.green, blue: self.blue, alpha: self.alpha)
+public extension UMColor.Components {
+    var color: UMColor {
+        if let color = ColorCache.shared[self.colorKey] {
+            return color
+        }
+
+        let color = UMColor(red: self.red, green: self.green, blue: self.blue, alpha: self.alpha)
+        ColorCache.shared.addCache(for: self.colorKey, color)
+        return color
+    }
+}
+
+extension UMColor.Components {
+    var colorKey: String {
+        "\(self.red * 255).\(self.green * 255).\(self.blue * 255).\(self.alpha * 100000)"
     }
 }

@@ -8,18 +8,18 @@
 import Foundation
 import UIKit
 
-protocol ColorType: RawRepresentable, ColorFactoryType where RawValue == String, Color == Self {
+public protocol ColorType: RawRepresentable, ColorFactoryType where RawValue == String, Color == Self {
 
 }
 
-extension ColorType {
+public extension ColorType {
     static var clear: ColorFactory<Color> {
         .init(.init(red: 0, green: 0, blue: 0, alpha: 0))
     }
 }
 
-extension ColorType {
-    var components: UIColor.Components {
+public extension ColorType {
+    var components: UMColor.Components {
         ColorFactory<Color>(self)
             .components
     }

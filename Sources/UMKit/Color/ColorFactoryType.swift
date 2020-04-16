@@ -8,13 +8,13 @@
 import Foundation
 import UIKit
 
-typealias UMColor = UIColor
+public typealias UMColor = UIColor
 
-protocol ColorFactoryType {
+public protocol ColorFactoryType {
     associatedtype Color: ColorType
 
-    var color: UIColor { get }
-    var components: UIColor.Components { get }
+    var color: UMColor { get }
+    var components: UMColor.Components { get }
 
     func lighter(_ constant: CGFloat) -> ColorFactory<Color>
     func darker(_ constant: CGFloat) -> ColorFactory<Color>
@@ -36,7 +36,7 @@ protocol ColorFactoryType {
     func alpha(_ alpha: CGFloat) -> ColorFactory<Color>
 }
 
-extension ColorFactoryType {
+public extension ColorFactoryType {
     func alpha(_ alpha: CGFloat) -> ColorFactory<Color> {
         ColorFactory<Color>(self.components)
             .alpha(alpha)
@@ -59,7 +59,7 @@ extension ColorFactoryType {
 }
 
 #if os(iOS) || os(tvOS)
-extension ColorFactoryType {
+public extension ColorFactoryType {
 
     func darkColor(_ color: Color) -> ColorFactory<Color> {
         ColorFactory<Color>(self.components)
@@ -77,7 +77,7 @@ extension ColorFactoryType {
     }
 }
 
-extension ColorFactoryType {
+public extension ColorFactoryType {
 
     func lightColor(_ color: Color) -> ColorFactory<Color> {
         ColorFactory<Color>(self.components)
@@ -96,7 +96,7 @@ extension ColorFactoryType {
 }
 #endif
 
-extension ColorFactoryType {
+public extension ColorFactoryType {
     func lighter(_ constant: CGFloat) -> ColorFactory<Color> {
         ColorFactory<Color>(self.components)
             .lighter(constant)
@@ -108,8 +108,9 @@ extension ColorFactoryType {
     }
 }
 
-extension ColorFactoryType {
-    var color: UIColor {
-        .init(red: self.components.red, green: self.components.green, blue: self.components.blue, alpha: self.components.alpha)
+public extension ColorFactoryType {
+    var color: UMColor {
+        ColorFactory<Color>(self.components)
+            .color
     }
 }
