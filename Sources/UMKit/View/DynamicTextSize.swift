@@ -52,7 +52,7 @@ public class UMDynamicTextSize: UIView {
 
         self.label = label
         self.label.adjustsFontForContentSizeCategory = true
-        label.translatesAutoresizingMaskIntoConstraints = false
+//        label.translatesAutoresizingMaskIntoConstraints = false
         self.translatesAutoresizingMaskIntoConstraints = false
 
         label.addSubview(self)
