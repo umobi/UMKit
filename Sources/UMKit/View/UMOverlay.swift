@@ -57,7 +57,6 @@ open class UMOverlay: UIView {
         overlay.isExclusiveTouch = false
         #endif
         overlay.layer.zPosition = -1
-//        view.translatesAutoresizingMaskIntoConstraints = false
         overlay.translatesAutoresizingMaskIntoConstraints = false
 
         view.insertSubview(view, at: 0)
