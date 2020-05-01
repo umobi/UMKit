@@ -43,13 +43,32 @@ public class UMDivider: UIView {
         divider.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(divider)
 
-        divider.update(thickness: 1)
+        divider.reloadLayout()
 
         return divider
     }
 
-    private(set) var thickness: CGFloat = 1
-    public func update(thickness: CGFloat) {
+    public var thickness: CGFloat = 1 {
+        didSet {
+            self.reloadLayout()
+        }
+    }
+
+    public var alignment: Alignment = .bottom {
+        didSet {
+            self.reloadLayout()
+        }
+    }
+
+    /// A reference to EdgeInsets.
+    public var insets: UIEdgeInsets = .zero {
+        didSet {
+            self.reloadLayout()
+        }
+    }
+
+    /// Lays out the divider.
+    func reloadLayout() {
         guard let superview = self.superview else {
             return
         }
@@ -59,26 +78,7 @@ public class UMDivider: UIView {
         superview.addSubview(self)
         self.layer.zPosition = 5000
 
-        self.thickness = thickness
         self.aligment(self.alignment, in: superview)
-    }
-
-    public var alignment: Alignment = .bottom {
-        didSet {
-            self.update(thickness: self.thickness)
-        }
-    }
-
-    /// A reference to EdgeInsets.
-    public var insets: UIEdgeInsets = .zero {
-        didSet {
-            self.update(thickness: self.thickness)
-        }
-    }
-
-    /// Lays out the divider.
-    public func reloadLayout() {
-        self.update(thickness: self.thickness)
     }
 }
 
@@ -182,7 +182,7 @@ public extension UIView {
                 UMDivider.from(view: self)?.isHidden = true
                 return
             }
-            UMDivider.orCreate(view: self).update(thickness: newValue)
+            UMDivider.orCreate(view: self).thickness = newValue
         }
     }
 
