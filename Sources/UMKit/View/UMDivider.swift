@@ -194,5 +194,19 @@ public extension UIView {
             UMDivider.orCreate(view: self).insets = newValue
         }
     }
+
+    var dividerAlpha: CGFloat {
+        get {
+            return UMDivider.from(view: self)?.alpha ?? .zero
+        }
+        set {
+            guard newValue > 0 else {
+                UMDivider.from(view: self)?.alpha = newValue
+                return
+            }
+
+            UMDivider.orCreate(view: self).alpha = newValue
+        }
+    }
 }
 #endif
