@@ -59,7 +59,7 @@ open class UMOverlay: UIView {
         overlay.layer.zPosition = -1
         overlay.translatesAutoresizingMaskIntoConstraints = false
 
-        view.insertSubview(view, at: 0)
+        view.insertSubview(overlay, at: 0)
 
         NSLayoutConstraint.activate([
             overlay.topAnchor.constraint(equalTo: view.topAnchor),
