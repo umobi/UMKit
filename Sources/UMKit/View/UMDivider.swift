@@ -24,18 +24,22 @@ import Foundation
 import UIKit
 
 #if !os(watchOS)
+private var kDivider = 0
+private extension UIView {
+    var divider: UMDivider? {
+        get { objc_getAssociatedObject(self, &kDivider) as? UMDivider }
+        set { objc_setAssociatedObject(self, &kDivider, newValue, .OBJC_ASSOCIATION_ASSIGN) }
+    }
+}
+
 public class UMDivider: UIView {
 
-    fileprivate static func from(view: UIView) -> UMDivider? {
-        guard let divider = view.subviews.first(where: { $0 is UMDivider }) as? UMDivider else {
-            return nil
-        }
-
-        return divider
+    fileprivate static func orEmpty(view: UIView) -> UMDivider? {
+        view.divider
     }
 
     fileprivate static func orCreate(view: UIView) -> UMDivider {
-        if let divider = UMDivider.from(view: view) {
+        if let divider = UMDivider.orEmpty(view: view) {
             return divider
         }
 
@@ -44,6 +48,8 @@ public class UMDivider: UIView {
         view.addSubview(divider)
 
         divider.reloadLayout()
+
+        view.divider = divider
 
         return divider
     }
@@ -144,7 +150,7 @@ public extension UIView {
 
     var dividerAlignment: UMDivider.Alignment {
         get {
-            return UMDivider.from(view: self)?.alignment ?? .bottom
+            return UMDivider.orEmpty(view: self)?.alignment ?? .bottom
         }
         set {
             UMDivider.orCreate(view: self).alignment = newValue
@@ -153,7 +159,7 @@ public extension UIView {
 
     var dividerColor: UIColor? {
         get {
-            return UMDivider.from(view: self)?.backgroundColor
+            return UMDivider.orEmpty(view: self)?.backgroundColor
         }
         set {
             UMDivider.orCreate(view: self).backgroundColor = newValue
@@ -162,11 +168,11 @@ public extension UIView {
 
     var isDividerHidden: Bool {
         get {
-            return UMDivider.from(view: self) == nil
+            return UMDivider.orEmpty(view: self) == nil
         }
         set {
             if newValue {
-                UMDivider.from(view: self)?.isHidden = true
+                UMDivider.orEmpty(view: self)?.isHidden = true
                 return
             }
             UMDivider.orCreate(view: self).isHidden = false
@@ -175,11 +181,11 @@ public extension UIView {
 
     var dividerThickness: CGFloat {
         get {
-            return UMDivider.from(view: self)?.thickness ?? 0.0
+            return UMDivider.orEmpty(view: self)?.thickness ?? 0.0
         }
         set {
             guard newValue > 0 else {
-                UMDivider.from(view: self)?.isHidden = true
+                UMDivider.orEmpty(view: self)?.isHidden = true
                 return
             }
             UMDivider.orCreate(view: self).thickness = newValue
@@ -188,7 +194,7 @@ public extension UIView {
 
     var dividerInsets: UIEdgeInsets {
         get {
-            return UMDivider.from(view: self)?.insets ?? .zero
+            return UMDivider.orEmpty(view: self)?.insets ?? .zero
         }
         set {
             UMDivider.orCreate(view: self).insets = newValue
@@ -197,11 +203,11 @@ public extension UIView {
 
     var dividerAlpha: CGFloat {
         get {
-            return UMDivider.from(view: self)?.alpha ?? .zero
+            return UMDivider.orEmpty(view: self)?.alpha ?? .zero
         }
         set {
             guard newValue > 0 else {
-                UMDivider.from(view: self)?.alpha = newValue
+                UMDivider.orEmpty(view: self)?.alpha = newValue
                 return
             }
 
