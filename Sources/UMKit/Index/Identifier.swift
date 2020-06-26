@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2020-Present Umobi - https://github.com/umobi
+// Copyright (c) 2019-Present Umobi - https://github.com/umobi
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,24 +22,27 @@
 
 import Foundation
 
-class CacheItem<Object> where Object: Cachable {
-    let cache: Cache<Object.CacheKey, Object>
-    let key: Object.CacheKey
+// swiftlint:disable identifier_name
+public protocol UMIdentifier {
+    var id: Int { get }
+}
 
-    init(_ cache: Cache<Object.CacheKey, Object>, _ named: Object.CacheKey) {
-        self.cache = cache
-        self.key = named
+public func == (_ left: UMIdentifier, _ right: UMIdentifier) -> Bool {
+    left.id == right.id
+}
+
+public extension Hashable where Self: UMIdentifier {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.id)
     }
 
-    deinit {
-        self.cache.removeCache(self.key)
+    static func == <Right: UMIdentifier>(_ left: Self, _ right: Right) -> Bool {
+        left.id == right.id
     }
 }
 
-private var kCachableCache: UInt = 0
-extension Cachable {
-    var cache: CacheItem<Self>? {
-        get { objc_getAssociatedObject(self, &kCachableCache) as? CacheItem<Self> }
-        set { objc_setAssociatedObject(self, &kCachableCache, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+public extension Array where Element: UMIdentifier & Hashable {
+    var unique: [Element] {
+        return Array(Set(self))
     }
 }

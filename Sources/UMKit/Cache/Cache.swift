@@ -39,14 +39,14 @@ public class Cache<Key, Object> where Object: Cachable, Object.CacheKey == Key {
         self.cachedItens[key] = nil
     }
 
-    public func addCache(for key: Key,_ item: Object) {
+    public func addCache(for key: Key, _ item: Object) {
         item.cache = .init(self, key)
         self.cachedItens[key] = .init(object: item)
     }
 }
 
 extension Cache {
-    func addCache(for key: Key,_ item: Object?) {
+    func addCache(for key: Key, _ item: Object?) {
         if let item = item {
             self.addCache(for: key, item)
             return

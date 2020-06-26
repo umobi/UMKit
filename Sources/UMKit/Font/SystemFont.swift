@@ -53,7 +53,13 @@ extension SystemFont {
             return UMFont.systemFont(ofSize: size, weight: fontMaker.weight ?? this.weight)
         }
 
-        let font = UMFont.systemFont(ofSize: fontMaker.size ?? fontMaker.style?.baseSize ?? UMFont.fontSize, weight: fontMaker.weight ?? this.weight)
+        let font = UMFont.systemFont(
+            ofSize: fontMaker.size ??
+                fontMaker.style?.baseSize ??
+                UMFont.fontSize,
+            weight: fontMaker.weight ??
+                this.weight
+        )
 
         guard #available(iOS 11, tvOS 11, watchOS 4, *), let style = fontMaker.style else {
             return font
@@ -63,4 +69,3 @@ extension SystemFont {
         return metrics.scaledFont(for: font)
     }
 }
-

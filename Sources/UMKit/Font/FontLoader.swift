@@ -41,7 +41,7 @@ struct FontLoader<Font: FontType> {
 
     func loadIfNeeded() {
         let bundle = maker.bundle ?? .main
-        var errorRef: Unmanaged<CFError>? = nil
+        var errorRef: Unmanaged<CFError>?
         let filename = self.filename
 
         guard

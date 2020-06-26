@@ -182,7 +182,6 @@ func fontName<Font: FontType>(_ font: Font, weight: FontWeight?) -> String {
         return "\(font.rawValue.capitalizingFirstLetter())"
     }()
 
-
     return "\(fontName)-\(weight)"
 }
 
@@ -191,7 +190,6 @@ extension String {
         return prefix(1).uppercased() + self.lowercased().dropFirst()
     }
 }
-
 
 public extension UMFont {
     static var fontSize: CGFloat {
