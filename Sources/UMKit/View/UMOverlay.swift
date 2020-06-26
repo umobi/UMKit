@@ -32,7 +32,7 @@ fileprivate extension UMOverlay {
 }
 
 open class UMOverlay: UIView {
-    private var traitCollectionChanged: ((UMOverlay, UITraitCollection) -> Void)? = nil
+    private var traitCollectionChanged: ((UMOverlay, UITraitCollection) -> Void)?
 
     public func setAlpha(_ newValue: CGFloat) {
         self.alpha = newValue

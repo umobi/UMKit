@@ -26,7 +26,7 @@ class CacheItem<Object> where Object: Cachable {
     let cache: Cache<Object.CacheKey, Object>
     let key: Object.CacheKey
 
-    init(_ cache: Cache<Object.CacheKey, Object>,_ named: Object.CacheKey) {
+    init(_ cache: Cache<Object.CacheKey, Object>, _ named: Object.CacheKey) {
         self.cache = cache
         self.key = named
     }

@@ -11,6 +11,6 @@ import UIKit
 public protocol ColorModifierType: ColorFactoryType {
     init(_ color: Color)
     init?(hex: String)
-    
+
     var components: UMColor.Components { get }
 }

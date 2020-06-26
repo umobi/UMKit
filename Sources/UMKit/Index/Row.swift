@@ -34,9 +34,9 @@ public protocol UMIndexProtocol: Equatable {
     var value: Index? { get }
     var indexPath: IndexPath { get }
     var isSelected: Bool { get }
-    
+
     func select(_ isSelected: Bool) -> Self
-    
+
     init()
 }
 
@@ -50,11 +50,11 @@ public extension UMIndexProtocol {
     var item: Index {
         return self.value!
     }
-    
+
     var isEmpty: Bool {
         return self.value == nil
     }
-    
+
     static var empty: Self {
         return .init()
     }
@@ -63,29 +63,29 @@ public extension UMIndexProtocol {
 public struct UMRow<Index>: UMIndexProtocol {
     public let value: Index?
     public let isSelected: Bool
-    
+
     public let indexPath: IndexPath
-    
+
     public init(_ value: Index, indexPath: IndexPath = .zero) {
         self.value = value
         self.isSelected = false
         self.indexPath = indexPath
     }
-    
+
     public init(selected value: Index, indexPath: IndexPath = .zero) {
         self.value = value
         self.isSelected = true
         self.indexPath = indexPath
     }
-    
+
     public func select(_ isSelected: Bool) -> UMRow<Index> {
         if isSelected {
             return UMRow(selected: self.item, indexPath: self.indexPath)
         }
-        
+
         return UMRow(self.item, indexPath: self.indexPath)
     }
-    
+
     public init() {
         self.value = nil
         self.isSelected = false

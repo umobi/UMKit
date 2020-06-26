@@ -22,20 +22,21 @@
 
 import Foundation
 
+// swiftlint:disable identifier_name
 public protocol UMIdentifier {
     var id: Int { get }
 }
 
-public func ==(_ left: UMIdentifier,_ right: UMIdentifier) -> Bool {
+public func == (_ left: UMIdentifier, _ right: UMIdentifier) -> Bool {
     left.id == right.id
 }
 
-extension Hashable where Self: UMIdentifier {
-    public func hash(into hasher: inout Hasher) {
+public extension Hashable where Self: UMIdentifier {
+    func hash(into hasher: inout Hasher) {
         hasher.combine(self.id)
     }
 
-    public static func ==<Right: UMIdentifier>(_ left: Self,_ right: Right) -> Bool {
+    static func == <Right: UMIdentifier>(_ left: Self, _ right: Right) -> Bool {
         left.id == right.id
     }
 }

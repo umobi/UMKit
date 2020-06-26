@@ -78,6 +78,7 @@ public extension UMColor {
 }
 
 public extension UMColor.Components {
+    // swiftlint:disable large_tuple
     private var maxColorInterval: (red: CGFloat, green: CGFloat, blue: CGFloat) {
         return (1 - self.red, 1 - self.green, 1 - self.blue)
     }

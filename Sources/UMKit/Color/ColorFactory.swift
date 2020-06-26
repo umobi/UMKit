@@ -130,12 +130,12 @@ public extension ColorFactory {
             .darkColor(self)
     }
 
-    func lightColor<LightColor>(_ color: LightColor) -> ColorFactory<LightColor> where LightColor : ColorType {
+    func lightColor<LightColor>(_ color: LightColor) -> ColorFactory<LightColor> where LightColor: ColorType {
         ColorFactory<LightColor>(color.components)
             .darkColor(self)
     }
 
-    func lightColor<Factory>(_ factory: Factory) -> ColorFactory<Factory.Color> where Factory : ColorFactoryType {
+    func lightColor<Factory>(_ factory: Factory) -> ColorFactory<Factory.Color> where Factory: ColorFactoryType {
         ColorFactory<Factory.Color>(factory.components)
             .darkColor(self)
     }

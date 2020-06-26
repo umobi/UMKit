@@ -102,13 +102,28 @@ public class UMDynamicTextSize: UIView {
     private func asMultilineText() {
         let needToUpdate: Bool = {
             if #available(iOS 11.0, tvOS 11.0, *) {
-                return self.traitCollection.preferredContentSizeCategory >= (self.limitContentSize ?? self.traitCollection.preferredContentSizeCategory)
+                return self.traitCollection
+                    .preferredContentSizeCategory >= (
+                        self.limitContentSize ??
+                        self.traitCollection.preferredContentSizeCategory
+                )
             }
 
-            let comparationResult = [UIContentSizeCategory]([.unspecified, .extraSmall, .small, .medium, .large, .extraLarge, .extraExtraLarge, .extraExtraExtraLarge, .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge, .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge]).reduce((false, false)) {
-                let isGratherOrEqualToLimitsSize = $0.1 || $1 == (self.limitContentSize ?? self.traitCollection.preferredContentSizeCategory)
+            let comparationResult = [UIContentSizeCategory]([
+                .unspecified, .extraSmall, .small,
+                .medium, .large, .extraLarge,
+                .extraExtraLarge, .extraExtraExtraLarge, .accessibilityMedium,
+                .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge
+            ]).reduce((false, false)) {
+                let isGratherOrEqualToLimitsSize = $0.1 ||
+                    $1 == (self.limitContentSize ??
+                        self.traitCollection.preferredContentSizeCategory)
 
-                return ($0.0 || (isGratherOrEqualToLimitsSize && $1 == self.traitCollection.preferredContentSizeCategory), isGratherOrEqualToLimitsSize)
+                return ($0.0 || (
+                    isGratherOrEqualToLimitsSize &&
+                        $1 == self.traitCollection.preferredContentSizeCategory
+                    ), isGratherOrEqualToLimitsSize)
                 }
 
             return comparationResult.1 && comparationResult.0
