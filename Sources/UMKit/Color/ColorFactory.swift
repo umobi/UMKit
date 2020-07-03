@@ -6,17 +6,25 @@
 //
 
 import Foundation
+import SwiftUI
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public struct ColorFactory<Color: ColorType>: ColorFactoryType {
     let alpha: CGFloat
     let red: CGFloat
     let green: CGFloat
     let blue: CGFloat
-    let darkColor: UMColor.Components?
+
+    #if !os(watchOS)
+    let darkColor: ColorComponents?
+    #endif
 
     init(_ color: Color) {
-        guard let components = UMColor.Components.component(from: color.rawValue) else {
+        guard let components = ColorComponents.component(from: color.rawValue) else {
             fatalError()
         }
 
@@ -24,15 +32,19 @@ public struct ColorFactory<Color: ColorType>: ColorFactoryType {
         self.red = components.red
         self.green = components.green
         self.blue = components.blue
+        #if !os(watchOS)
         self.darkColor = nil
+        #endif
     }
 
-    init(_ components: UMColor.Components) {
+    init(_ components: ColorComponents) {
         self.alpha = components.alpha
         self.red = components.red
         self.green = components.green
         self.blue = components.blue
+        #if !os(watchOS)
         self.darkColor = nil
+        #endif
     }
 
     private init(_ original: ColorFactory<Color>, editable: Editable) {
@@ -40,7 +52,9 @@ public struct ColorFactory<Color: ColorType>: ColorFactoryType {
         self.red = editable.red
         self.green = editable.green
         self.blue = editable.blue
+        #if !os(watchOS)
         self.darkColor = editable.darkColor
+        #endif
     }
 
     fileprivate func edit(_ edit: @escaping (Editable) -> Void) -> Self {
@@ -54,14 +68,18 @@ public struct ColorFactory<Color: ColorType>: ColorFactoryType {
         var red: CGFloat
         var green: CGFloat
         var blue: CGFloat
-        var darkColor: UMColor.Components?
+        #if !os(watchOS)
+        var darkColor: ColorComponents?
+        #endif
 
         init(_ colorFactory: ColorFactory<Color>) {
             self.alpha = colorFactory.alpha
             self.red = colorFactory.red
             self.green = colorFactory.green
             self.blue = colorFactory.blue
+            #if !os(watchOS)
             self.darkColor = colorFactory.darkColor
+            #endif
         }
     }
 }
@@ -71,6 +89,7 @@ public extension ColorFactory {
         self.edit {
             $0.alpha = alpha
 
+            #if !os(watchOS)
             if let darkColor = $0.darkColor {
                 $0.darkColor = .init(
                     red: darkColor.red,
@@ -79,6 +98,7 @@ public extension ColorFactory {
                     alpha: alpha
                 )
             }
+            #endif
         }
     }
 
@@ -101,7 +121,7 @@ public extension ColorFactory {
     }
 }
 
-#if os(tvOS) || os(iOS)
+#if os(tvOS) || os(iOS) || os(macOS)
 public extension ColorFactory {
 
     func darkColor(_ color: Color) -> ColorFactory<Color> {
@@ -165,30 +185,54 @@ public extension ColorFactory {
 }
 
 public extension ColorFactory {
-    var components: UMColor.Components {
+    var components: ColorComponents {
         .init(red: self.red, green: self.green, blue: self.blue, alpha: self.alpha)
     }
 }
 
 public extension ColorFactory {
-    var color: UMColor {
+    #if os(macOS)
+    var nsColor: NSColor {
         let lightColor = self.components
+        let darkColor = self.darkColor
 
-        #if os(iOS) || os(tvOS)
-            guard let darkColor = self.darkColor, #available(iOS 13, tvOS 13, *) else {
+        return NSColor(name: nil, dynamicProvider: {
+            switch $0.name {
+            case .aqua:
+                return lightColor.color
+            case .darkAqua:
+                return darkColor?.color ?? lightColor.color
+            default:
                 return lightColor.color
             }
+        })
+    }
+    #else
+    var uiColor: UIColor {
+        let lightColor = self.components
 
-            return .init(dynamicProvider: {
-                switch $0.userInterfaceStyle {
-                case .dark:
-                    return darkColor.color
-                default:
-                    return lightColor.color
-                }
-            })
+        #if !os(watchOS)
+        let darkColor = self.darkColor
+
+        return UIColor(dynamicProvider: {
+            switch $0.userInterfaceStyle {
+            case .dark:
+                return darkColor?.color ?? lightColor.color
+            default:
+                return lightColor.color
+            }
+        })
         #else
-            return lightColor.color
+        return lightColor.color
+        #endif
+
+    }
+    #endif
+    var color: SwiftUI.Color {
+        #if os(macOS)
+        return SwiftUI.Color(self.nsColor)
+        #else
+        return SwiftUI.Color(self.uiColor)
         #endif
     }
 }

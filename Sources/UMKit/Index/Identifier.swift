@@ -20,28 +20,19 @@
 // THE SOFTWARE.
 //
 
-import Foundation
+import SwiftUI
 
-// swiftlint:disable identifier_name
-public protocol UMIdentifier {
-    var id: Int { get }
-}
-
-public func == (_ left: UMIdentifier, _ right: UMIdentifier) -> Bool {
-    left.id == right.id
-}
-
-public extension Hashable where Self: UMIdentifier {
+public extension Hashable where Self: Identifiable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(self.id)
     }
 
-    static func == <Right: UMIdentifier>(_ left: Self, _ right: Right) -> Bool {
+    static func == <Right: Identifiable>(_ left: Self, _ right: Right) -> Bool where ID == Right.ID {
         left.id == right.id
     }
 }
 
-public extension Array where Element: UMIdentifier & Hashable {
+public extension Array where Element: Identifiable & Hashable {
     var unique: [Element] {
         return Array(Set(self))
     }

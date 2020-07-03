@@ -21,10 +21,18 @@
 //
 
 import Foundation
-import UIKit
 
-public extension IndexPath {
-    static var zero: IndexPath {
+public struct UMIndexPath: Equatable {
+    public let row: Int
+    public let section: Int
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.row == rhs.row && lhs.section == rhs.section
+    }
+}
+
+public extension UMIndexPath {
+    static var zero: UMIndexPath {
         return .init(row: 0, section: 0)
     }
 }
@@ -32,7 +40,7 @@ public extension IndexPath {
 public protocol UMIndexProtocol: Equatable {
     associatedtype Index
     var value: Index? { get }
-    var indexPath: IndexPath { get }
+    var indexPath: UMIndexPath { get }
     var isSelected: Bool { get }
 
     func select(_ isSelected: Bool) -> Self
@@ -64,15 +72,15 @@ public struct UMRow<Index>: UMIndexProtocol {
     public let value: Index?
     public let isSelected: Bool
 
-    public let indexPath: IndexPath
+    public let indexPath: UMIndexPath
 
-    public init(_ value: Index, indexPath: IndexPath = .zero) {
+    public init(_ value: Index, indexPath: UMIndexPath = .zero) {
         self.value = value
         self.isSelected = false
         self.indexPath = indexPath
     }
 
-    public init(selected value: Index, indexPath: IndexPath = .zero) {
+    public init(selected value: Index, indexPath: UMIndexPath = .zero) {
         self.value = value
         self.isSelected = true
         self.indexPath = indexPath

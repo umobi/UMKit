@@ -21,9 +21,10 @@
 //
 
 import Foundation
+
+#if !os(watchOS) && !os(macOS)
 import UIKit
 
-#if !os(watchOS)
 fileprivate extension UMOverlay {
     class Settings {
         static var alpha: (CGFloat) -> CGFloat = { _ in 0.16 }

@@ -20,8 +20,7 @@
 // THE SOFTWARE.
 //
 
-import Foundation
-import UIKit
+import SwiftUI
 
 public enum SystemFont: String, FontType {
     case bold
@@ -31,7 +30,7 @@ public enum SystemFont: String, FontType {
 }
 
 extension SystemFont {
-    var weight: FontWeight {
+    var weight: Font.Weight {
         switch self {
         case .bold:
             return .bold
@@ -44,28 +43,20 @@ extension SystemFont {
         }
     }
 
-    func loadFont(_ fontMaker: FontFrozen) -> UMFont? {
+    func loadFont(_ fontMaker: FontFrozen) -> Font {
         guard let this = SystemFont(rawValue: fontMaker.fontType) else {
-            return nil
+            fatalError()
         }
 
         if let size = fontMaker.size {
-            return UMFont.systemFont(ofSize: size, weight: fontMaker.weight ?? this.weight)
+            return Font.system(size: size, weight: fontMaker.weight ?? this.weight, design: .default)
         }
 
-        let font = UMFont.systemFont(
-            ofSize: fontMaker.size ??
-                fontMaker.style?.baseSize ??
-                UMFont.fontSize,
-            weight: fontMaker.weight ??
-                this.weight
-        )
-
-        guard #available(iOS 11, tvOS 11, watchOS 4, *), let style = fontMaker.style else {
-            return font
+        guard let style = fontMaker.style else {
+            fatalError()
         }
 
-        let metrics = UIFontMetrics(forTextStyle: style)
-        return metrics.scaledFont(for: font)
+        return Font.system(style)
+            .weight(self.weight)
     }
 }

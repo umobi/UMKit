@@ -21,7 +21,6 @@
 //
 
 import Foundation
-import UIKit
 
 public struct UMSection<Section, Item> {
     public let section: Section
@@ -61,36 +60,12 @@ final public class UMSectionRow<Index, IndexRow>: UMIndexProtocol {
         self.row = row
     }
 
-    public var indexPath: IndexPath {
+    public var indexPath: UMIndexPath {
         return self.row.indexPath
     }
 
     public var isSelected: Bool {
         return self.row.isSelected
-    }
-
-    public var isFirst: Bool {
-        guard let first = self.item.items.first as? UMIdentifier else {
-            return self.indexPath.row == 0
-        }
-
-        guard let value = row.value as? UMIdentifier else {
-            return self.indexPath.row == 0
-        }
-
-        return first == value
-    }
-
-    public var isLast: Bool {
-        guard let last = self.item.items.last as? UMIdentifier else {
-            return self.indexPath.row == self.item.items.count - 1
-        }
-
-        guard let value = row.value as? UMIdentifier else {
-            return self.indexPath.row == self.item.items.count - 1
-        }
-
-        return last == value
     }
 
     public func select(_ isSelected: Bool) -> UMSectionRow<Index, IndexRow> {
@@ -100,6 +75,32 @@ final public class UMSectionRow<Index, IndexRow>: UMIndexProtocol {
     public init() {
         self.value = nil
         self.row = .empty
+    }
+}
+
+extension UMSectionRow where IndexRow: Equatable {
+    public var isFirst: Bool {
+        guard let first = self.item.items.first else {
+            return self.indexPath.row == 0
+        }
+
+        guard let value = row.value else {
+            return self.indexPath.row == 0
+        }
+
+        return first == value
+    }
+
+    public var isLast: Bool {
+        guard let last = self.item.items.last else {
+            return self.indexPath.row == self.item.items.count - 1
+        }
+
+        guard let value = row.value else {
+            return self.indexPath.row == self.item.items.count - 1
+        }
+
+        return last == value
     }
 }
 

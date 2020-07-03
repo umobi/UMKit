@@ -6,24 +6,23 @@
 //
 
 import Foundation
-import UIKit
 
 public struct ColorGrayModifier<Color: ColorType>: ColorModifierType {
-    private let frozedComponent: UMColor.Components
+    private let frozedComponent: ColorComponents
 
     public init(_ color: Color) {
         self.frozedComponent = color.components
     }
 
     public init?(hex: String) {
-        guard let components = UMColor.Components(hex: hex) else {
+        guard let components = ColorComponents(hex: hex) else {
             return nil
         }
 
         self.frozedComponent = components
     }
 
-    public var components: UMColor.Components {
+    public var components: ColorComponents {
         let components = self.frozedComponent
 
         guard !components.isGrayScale else {

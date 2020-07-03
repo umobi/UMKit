@@ -8,16 +8,17 @@
 
 Pod::Spec.new do |s|
   s.name             = 'UMKit'
-  s.version          = '1.0.2'
+  s.version          = '2.0.0'
   s.summary          = 'A short description of UMKit.'
   s.homepage         = 'https://github.com/umobi/UMKit'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'brennobemoura' => 'brenno@umobi.com.br' }
   s.source           = { :git => 'https://github.com/umobi/UMKit.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '10.0'
-  s.tvos.deployment_target = '10.0'
-  s.watchos.deployment_target = '4.0'
+  s.ios.deployment_target = '13.0'
+  s.tvos.deployment_target = '13.0'
+  s.watchos.deployment_target = '6.0'
+  s.macos.deployment_target = '10.15'
 
   s.swift_version = '5.2'
 

@@ -6,20 +6,28 @@
 //
 
 import Foundation
+import SwiftUI
+#if os(macOS)
+import AppKit
+#else
 import UIKit
-
-public typealias UMColor = UIColor
+#endif
 
 public protocol ColorFactoryType {
     associatedtype Color: ColorType
 
-    var color: UMColor { get }
-    var components: UMColor.Components { get }
+    var color: SwiftUI.Color { get }
+    #if os(macOS)
+    var nsColor: NSColor { get }
+    #else
+    var uiColor: UIColor { get }
+    #endif
+    var components: ColorComponents { get }
 
     func lighter(_ constant: CGFloat) -> ColorFactory<Color>
     func darker(_ constant: CGFloat) -> ColorFactory<Color>
 
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(macOS)
     func darkColor(_ color: Color) -> ColorFactory<Color>
     func darkColor<DarkColor: ColorType>(_ color: DarkColor) -> ColorFactory<Color>
     func darkColor<Factory: ColorFactoryType>(_ factory: Factory) -> ColorFactory<Color>
@@ -58,7 +66,7 @@ public extension ColorFactoryType {
     }
 }
 
-#if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(macOS)
 public extension ColorFactoryType {
 
     func darkColor(_ color: Color) -> ColorFactory<Color> {
@@ -109,8 +117,19 @@ public extension ColorFactoryType {
 }
 
 public extension ColorFactoryType {
-    var color: UMColor {
+    var color: SwiftUI.Color {
         ColorFactory<Color>(self.components)
             .color
     }
+    #if os(macOS)
+    var nsColor: NSColor {
+        ColorFactory<Color>(self.components)
+            .nsColor
+    }
+    #else
+    var uiColor: UIColor {
+        ColorFactory<Color>(self.components)
+            .uiColor
+    }
+    #endif
 }

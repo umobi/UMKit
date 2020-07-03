@@ -21,12 +21,12 @@
 //
 
 import Foundation
-import CoreGraphics
+import SwiftUI
 
 public struct FontFrozen {
     public let fontType: String
-    public let weight: FontWeight?
-    public let style: FontStyle?
+    public let weight: Font.Weight?
+    public let style: Font.TextStyle?
     public let size: CGFloat?
     public let bundle: Bundle?
     public let filename: String?

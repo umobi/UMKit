@@ -21,9 +21,10 @@
 //
 
 import Foundation
+
+#if !os(watchOS) && !os(macOS)
 import UIKit
 
-#if !os(watchOS)
 private var kDivider = 0
 private extension UIView {
     var divider: UMDivider? {

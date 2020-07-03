@@ -21,7 +21,7 @@
 //
 
 import Foundation
-import CoreGraphics
+import SwiftUI
 
 /**
     The name of fonts should be FontName-Weight.tff
@@ -38,7 +38,7 @@ extension FontType {
 }
 
 public extension FontType {
-    func style(_ style: FontStyle) -> FontFactory<Self> {
+    func style(_ style: Font.TextStyle) -> FontFactory<Self> {
         FontFactory(font: self)
             .style(style)
     }

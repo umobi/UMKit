@@ -21,9 +21,10 @@
 //
 
 import Foundation
+
+#if !os(watchOS) && !os(macOS)
 import UIKit
 
-#if !os(watchOS)
 public class UMDynamicTextSize: UIView {
     private weak var label: UILabel!
     fileprivate var textValueObserver: NSKeyValueObservation!

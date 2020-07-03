@@ -20,9 +20,8 @@
 // THE SOFTWARE.
 //
 
-import Foundation
-import UIKit
+import SwiftUI
 
 public protocol FontProvider {
-    func loadFont(_ fontMaker: FontFrozen) -> UMFont?
+    func loadFont(_ fontMaker: FontFrozen) -> SwiftUI.Font
 }

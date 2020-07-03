@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "UMKit",
     platforms: [
-        .iOS(.v10), .tvOS(.v10), .watchOS(.v4)
+        .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macOS(.v10_15)
     ],
     products: [
         .library(
@@ -17,9 +17,6 @@ let package = Package(
     targets: [
         .target(
             name: "UMKit",
-            dependencies: []),
-        .testTarget(
-            name: "UMKitTests",
-            dependencies: ["UMKit"])
+            dependencies: [])
     ]
 )

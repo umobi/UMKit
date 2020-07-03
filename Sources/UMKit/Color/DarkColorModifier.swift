@@ -9,7 +9,7 @@ import Foundation
 import CoreGraphics
 
 public struct DarkColorModifier<Color: ColorType>: ColorModifierType {
-    let frozedComponent: UMColor.Components
+    let frozedComponent: ColorComponents
     let offset: CGFloat
     let rgbOffset: CGFloat?
     let grayOffset: CGFloat?
@@ -22,7 +22,7 @@ public struct DarkColorModifier<Color: ColorType>: ColorModifierType {
     }
 
     public init?(hex: String) {
-        guard let components = UMColor.Components(hex: hex) else {
+        guard let components = ColorComponents(hex: hex) else {
             return nil
         }
 
@@ -81,7 +81,7 @@ extension DarkColorModifier {
 
 extension DarkColorModifier {
 
-    public var components: UMColor.Components {
+    public var components: ColorComponents {
         let components = self.frozedComponent
 
         guard components.isGrayScale else {
@@ -96,7 +96,7 @@ extension DarkColorModifier {
 
         let offset = self.grayOffset ?? self.offset
 
-        let darkComponents = UMColor.Components(
+        let darkComponents = ColorComponents(
             red: 1 - components.red,
             green: 1 - components.green,
             blue: 1 - components.blue,

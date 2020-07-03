@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 public protocol ColorType: RawRepresentable, ColorFactoryType where RawValue == String, Color == Self {
 
@@ -19,7 +18,7 @@ public extension ColorType {
 }
 
 public extension ColorType {
-    var components: UMColor.Components {
+    var components: ColorComponents {
         ColorFactory<Color>(self)
             .components
     }
