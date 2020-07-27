@@ -179,13 +179,12 @@ public extension UMColor {
 
 public extension UMColor.Components {
     var color: UMColor {
-        if let color = ColorCache.shared[self.colorKey] {
-            return color
-        }
-
-        let color = UMColor(red: self.red, green: self.green, blue: self.blue, alpha: self.alpha)
-        ColorCache.shared.addCache(for: self.colorKey, color)
-        return color
+        UMColor(
+            red: self.red,
+            green: self.green,
+            blue: self.blue,
+            alpha: self.alpha
+        )
     }
 }
 

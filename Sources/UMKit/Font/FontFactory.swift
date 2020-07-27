@@ -131,18 +131,11 @@ extension FontFactory {
     }
 
     public var font: UMFont! {
-        if let font = FontCache.shared[self.fontKey] {
-            return font
-        }
-
         if let font = (self.fontType as? FontProvider)?.loadFont(self.frozed) {
-            FontCache.shared.addCache(for: self.fontKey, font)
             return font
         }
 
         if let systemFont = self.fontType as? SystemFont {
-            let font = systemFont.loadFont(self.frozed)
-            FontCache.shared.addCache(for: self.fontKey, font)
             return systemFont.loadFont(self.frozed)
         }
 
@@ -150,9 +143,7 @@ extension FontFactory {
         let name = fontName(self.fontType, weight: self.weight)
 
         guard #available(iOS 11, tvOS 11, watchOS 4, *) else {
-            let font = UMFont(name: name, size: self.size ?? UMFont.fontSize)
-            FontCache.shared.addCache(for: self.fontKey, font)
-            return font
+            return UMFont(name: name, size: self.size ?? UMFont.fontSize)
         }
 
         if let style = self.style {
@@ -161,14 +152,10 @@ extension FontFactory {
                 return nil
             }
 
-            let font = fontMetrics.scaledFont(for: tempFont)
-            FontCache.shared.addCache(for: self.fontKey, font)
-            return font
+            return fontMetrics.scaledFont(for: tempFont)
         }
 
-        let font = UMFont(name: name, size: self.size ?? UMFont.fontSize)
-        FontCache.shared.addCache(for: self.fontKey, font)
-        return font
+        return UMFont(name: name, size: self.size ?? UMFont.fontSize)
     }
 }
 
