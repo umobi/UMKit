@@ -46,7 +46,9 @@ struct FontLoader<Font: FontType> {
 
         guard
             !FontLoaded.shared.isFontLoaded(filename),
-            let pathForResource = bundle.path(forResource: filename, ofType: nil),
+            let pathForResource = (["tff", "otf"].compactMap {
+                bundle.path(forResource: filename, ofType: $0)
+            }.first),
             let fontData = NSData(contentsOfFile: pathForResource),
             let dataProvider = CGDataProvider(data: fontData),
             let fontRef = CGFont(dataProvider),
