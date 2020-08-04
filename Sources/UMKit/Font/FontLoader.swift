@@ -46,7 +46,7 @@ struct FontLoader<Font: FontType> {
 
         guard
             !FontLoaded.shared.isFontLoaded(filename),
-            let pathForResource = (["tff", "otf"].compactMap {
+            let pathForResource = (kFontType.compactMap {
                 bundle.path(forResource: filename, ofType: $0)
             }.first),
             let fontData = NSData(contentsOfFile: pathForResource),
@@ -59,4 +59,8 @@ struct FontLoader<Font: FontType> {
 
         FontLoaded.shared.store(filename)
     }
+}
+
+private var kFontType: [String] {
+    ["ttf", "otf"]
 }

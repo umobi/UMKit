@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'UMKit'
-  s.version          = '1.1.1'
+  s.version          = '1.1.2'
   s.summary          = 'A short description of UMKit.'
   s.homepage         = 'https://github.com/umobi/UMKit'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
