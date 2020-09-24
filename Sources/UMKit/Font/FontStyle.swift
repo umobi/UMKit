@@ -132,10 +132,6 @@ extension Font.TextStyle: FontStyleSized {
             return 36.0
         case .title:
             return 34.0
-        case .title2:
-            return 27.0
-        case .title3:
-            return 19.0
         case .headline:
             return 16.0
         case .subheadline:
@@ -148,8 +144,6 @@ extension Font.TextStyle: FontStyleSized {
             return 15.0     // NOT FOUND
         case .caption:
             return 15.0
-        case .caption2:
-            return 14.0
         default:
             return 16.0
         }
