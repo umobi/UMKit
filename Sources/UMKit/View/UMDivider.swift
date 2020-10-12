@@ -20,200 +20,145 @@
 // THE SOFTWARE.
 //
 
-import Foundation
+import SwiftUI
 
-#if !os(watchOS) && !os(macOS)
-import UIKit
+public enum UMDividerDirection {
+    case top
+    case left
+    case right
+    case bottom
+}
 
-private var kDivider = 0
-private extension UIView {
-    var divider: UMDivider? {
-        get { objc_getAssociatedObject(self, &kDivider) as? UMDivider }
-        set { objc_setAssociatedObject(self, &kDivider, newValue, .OBJC_ASSOCIATION_ASSIGN) }
+public struct UMDividerPadding {
+    let leftOrTop: CGFloat
+    let rightOrBottom: CGFloat
+
+    init(_ leftOrTop: CGFloat, _ rightOrBottom: CGFloat) {
+        self.leftOrTop = leftOrTop
+        self.rightOrBottom = rightOrBottom
+    }
+
+    static var zero: UMDividerPadding {
+        .init(.zero, .zero)
     }
 }
 
-public class UMDivider: UIView {
+private struct UMDivider<Content>: View where Content: View {
+    let direction: UMDividerDirection
+    let content: () -> Content
+    let color: Color
+    let padding: UMDividerPadding
+    let height: CGFloat
+    @Environment(\.layoutDirection) var layoutDirection
 
-    fileprivate static func orEmpty(view: UIView) -> UMDivider? {
-        view.divider
+    init(_ color: Color, _ direction: UMDividerDirection, _ padding: UMDividerPadding, _ height: CGFloat, _ content: @escaping () -> Content) {
+        self.content = content
+        self.direction = direction
+        self.color = color
+        self.padding = padding
+        self.height = height
     }
 
-    fileprivate static func orCreate(view: UIView) -> UMDivider {
-        if let divider = UMDivider.orEmpty(view: view) {
-            return divider
-        }
-
-        let divider = UMDivider()
-        divider.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(divider)
-
-        divider.reloadLayout()
-
-        view.divider = divider
-
-        return divider
+    var verticalColor: AnyView {
+        AnyView(
+            self.color
+                .frame(width: self.height, height: .infinity)
+                .padding(
+                    EdgeInsets(
+                        top: self.padding.leftOrTop,
+                        leading: .zero,
+                        bottom: self.padding.rightOrBottom,
+                        trailing: .zero
+                    )
+                )
+        )
     }
 
-    public var thickness: CGFloat = 1 {
-        didSet {
-            self.reloadLayout()
-        }
+    var horizontalColor: AnyView {
+        AnyView(
+            self.color
+                .padding(
+                    EdgeInsets(
+                        top: .zero,
+                        leading: self.padding.leftOrTop,
+                        bottom: .zero,
+                        trailing: self.padding.rightOrBottom
+                    )
+                )
+                .frame(maxWidth: .infinity, idealHeight: self.height)
+        )
     }
 
-    public var alignment: Alignment = .bottom {
-        didSet {
-            self.reloadLayout()
-        }
-    }
+    var body: some View {
+        switch self.direction {
+        case .top, .bottom:
+            VStack(spacing: .zero) {
+                if case .top = self.direction {
+                    self.horizontalColor
+                }
 
-    /// A reference to EdgeInsets.
-    public var insets: UIEdgeInsets = .zero {
-        didSet {
-            self.reloadLayout()
-        }
-    }
+                self.content()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-    /// Lays out the divider.
-    func reloadLayout() {
-        guard let superview = self.superview else {
-            return
-        }
-
-        self.removeFromSuperview()
-        NSLayoutConstraint.deactivate(self.constraints)
-        superview.addSubview(self)
-        self.layer.zPosition = 5000
-
-        self.aligment(self.alignment, in: superview)
-    }
-}
-
-public extension UMDivider {
-    enum Alignment {
-        case top
-        case left
-        case bottom
-        case right
-    }
-
-    func topLayout(_ superview: UIView) {
-        NSLayoutConstraint.activate([
-            self.topAnchor.constraint(equalTo: superview.topAnchor, constant: self.insets.top),
-            self.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: self.insets.left),
-            self.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -self.insets.right),
-            self.heightAnchor.constraint(equalToConstant: self.thickness)
-        ])
-    }
-
-    func leftLayout(_ superview: UIView) {
-        NSLayoutConstraint.activate([
-            self.topAnchor.constraint(equalTo: superview.topAnchor, constant: self.insets.top),
-            self.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: self.insets.left),
-            self.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -self.insets.bottom),
-            self.widthAnchor.constraint(equalToConstant: self.thickness)
-        ])
-    }
-
-    func bottomLayout(_ superview: UIView) {
-        NSLayoutConstraint.activate([
-            self.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -self.insets.bottom),
-            self.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: self.insets.left),
-            self.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -self.insets.right),
-            self.heightAnchor.constraint(equalToConstant: self.thickness)
-        ])
-    }
-
-    func rightLayout(_ superview: UIView) {
-        NSLayoutConstraint.activate([
-            self.topAnchor.constraint(equalTo: superview.topAnchor, constant: self.insets.top),
-            self.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -self.insets.bottom),
-            self.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -self.insets.right),
-            self.widthAnchor.constraint(equalToConstant: self.thickness)
-        ])
-    }
-
-    func aligment(_ aligment: Alignment, in superview: UIView) {
-        switch aligment {
-        case .top:
-            self.topLayout(superview)
-        case .left:
-            self.leftLayout(superview)
-        case .right:
-            self.rightLayout(superview)
-        case .bottom:
-            self.bottomLayout(superview)
-        }
-    }
-}
-
-public extension UIView {
-
-    var dividerAlignment: UMDivider.Alignment {
-        get {
-            return UMDivider.orEmpty(view: self)?.alignment ?? .bottom
-        }
-        set {
-            UMDivider.orCreate(view: self).alignment = newValue
-        }
-    }
-
-    var dividerColor: UIColor? {
-        get {
-            return UMDivider.orEmpty(view: self)?.backgroundColor
-        }
-        set {
-            UMDivider.orCreate(view: self).backgroundColor = newValue
-        }
-    }
-
-    var isDividerHidden: Bool {
-        get {
-            return UMDivider.orEmpty(view: self) == nil
-        }
-        set {
-            if newValue {
-                UMDivider.orEmpty(view: self)?.isHidden = true
-                return
+                if case .bottom = self.direction {
+                    self.horizontalColor
+                }
             }
-            UMDivider.orCreate(view: self).isHidden = false
-        }
-    }
+        case .left, .right:
+            HStack(spacing: .zero) {
+                if self.direction.isLeft(self.layoutDirection) {
+                    self.verticalColor
+                }
 
-    var dividerThickness: CGFloat {
-        get {
-            return UMDivider.orEmpty(view: self)?.thickness ?? 0.0
-        }
-        set {
-            guard newValue > 0 else {
-                UMDivider.orEmpty(view: self)?.isHidden = true
-                return
+                self.content()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                if self.direction.isRight(self.layoutDirection) {
+                    self.verticalColor
+                }
             }
-            UMDivider.orCreate(view: self).thickness = newValue
-        }
-    }
-
-    var dividerInsets: UIEdgeInsets {
-        get {
-            return UMDivider.orEmpty(view: self)?.insets ?? .zero
-        }
-        set {
-            UMDivider.orCreate(view: self).insets = newValue
-        }
-    }
-
-    var dividerAlpha: CGFloat {
-        get {
-            return UMDivider.orEmpty(view: self)?.alpha ?? .zero
-        }
-        set {
-            guard newValue > 0 else {
-                UMDivider.orEmpty(view: self)?.alpha = newValue
-                return
-            }
-
-            UMDivider.orCreate(view: self).alpha = newValue
         }
     }
 }
-#endif
+
+private extension UMDividerDirection {
+    func isLeft(_ layoutDirection: LayoutDirection) -> Bool {
+        switch layoutDirection {
+        case .leftToRight:
+            return self == .left
+        case .rightToLeft:
+            return self == .right
+        @unknown default:
+            return self == .left
+        }
+    }
+
+    func isRight(_ layoutDirection: LayoutDirection) -> Bool {
+        switch layoutDirection {
+        case .leftToRight:
+            return self == .right
+        case .rightToLeft:
+            return self == .left
+        @unknown default:
+            return self == .right
+        }
+    }
+}
+
+public extension View {
+    func umDivider(color: Color, direction: UMDividerDirection) -> AnyView {
+        AnyView(UMDivider(color, direction, .zero, 1, { self }))
+    }
+
+    func umDivider(color: Color, height: CGFloat, direction: UMDividerDirection) -> AnyView {
+        AnyView(UMDivider(color, direction, .zero, height, { self }))
+    }
+
+    func umDivider(color: Color, direction: UMDividerDirection, padding: UMDividerPadding) -> AnyView {
+        AnyView(UMDivider(color, direction, padding, 1, { self }))
+    }
+
+    func umDivider(color: Color, height: CGFloat, direction: UMDividerDirection, padding: UMDividerPadding) -> AnyView {
+        AnyView(UMDivider(color, direction, padding, height, { self }))
+    }
+}
