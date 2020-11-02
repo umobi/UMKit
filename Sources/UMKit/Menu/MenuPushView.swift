@@ -22,6 +22,7 @@
 
 import SwiftUI
 
+#if !os(tvOS)
 extension Menu {
     public struct PushView<Destination>: View where Destination: View {
         @State private var isPushing: Bool = false
@@ -32,11 +33,11 @@ extension Menu {
         public init<Content>(destination: @escaping (Binding<Bool>) -> Destination, content: Content) where Content: View {
             self.destination = destination
             self.content = { isPushing in
-                AnyView(
-                    content.onTapGesture {
+                {
+                    return AnyView(content.onTapGesture {
                         isPushing.wrappedValue = true
-                    }
-                )
+                    })
+                }()
             }
         }
 
@@ -49,3 +50,4 @@ extension Menu {
         }
     }
 }
+#endif

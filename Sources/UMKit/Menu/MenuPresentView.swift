@@ -32,11 +32,15 @@ extension Menu {
         public init<Content>(destination: @escaping (Binding<Bool>) -> Destination, content: Content) where Content: View {
             self.destination = destination
             self.content = { isPresenting in
-                AnyView(
-                    content.onTapGesture {
+                {
+                    #if !os(tvOS)
+                    return AnyView(content.onTapGesture {
                         isPresenting.wrappedValue = true
-                    }
-                )
+                    })
+                    #else
+                    return AnyView(content)
+                    #endif
+                }()
             }
         }
 
