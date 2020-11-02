@@ -48,11 +48,13 @@ private struct OverlayDefaultModifier: OverlayModifier {
 }
 
 public extension View {
-    func umOverlay(_ color: Color) -> AnyView {
-        AnyView(self.background(Overlay(color, OverlayDefaultModifier())))
+    @inline(__always)
+    func umOverlay(_ color: Color) -> some View {
+        self.background(Overlay(color, OverlayDefaultModifier()))
     }
 
-    func umOverlay<Modifier>(_ color: Color, _ modifier: Modifier) -> AnyView where Modifier: OverlayModifier {
-        AnyView(self.background(Overlay(color, modifier)))
+    @inline(__always)
+    func umOverlay<Modifier>(_ color: Color, _ modifier: Modifier) -> some View where Modifier: OverlayModifier {
+        self.background(Overlay(color, modifier))
     }
 }

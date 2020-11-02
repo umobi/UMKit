@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.watchos.deployment_target = '6.0'
   s.macos.deployment_target = '10.15'
 
-  s.swift_version = '5.2'
+  s.swift_version = '5.3'
 
   s.description      = <<-DESC
 TODO: Add long description of the pod here.

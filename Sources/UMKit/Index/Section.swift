@@ -22,19 +22,22 @@
 
 import Foundation
 
+@frozen
 public struct UMSection<Section, Item> {
     public let section: Section
     public let items: [Item]
     public let index: Int
 
+    @inlinable
     public init(_ section: Section, items: [Item], section index: Int = 0) {
         self.section = section
         self.items = items
         self.index = index
     }
 
+    @inlinable
     public var asSectionRows: [UMSectionRow<Section, Item>] {
-        return self.items
+        self.items
             .enumerated()
             .compactMap {
                 UMSectionRow(
@@ -51,27 +54,33 @@ public struct UMSection<Section, Item> {
     }
 }
 
-final public class UMSectionRow<Index, IndexRow>: UMIndexProtocol {
+@frozen
+public struct UMSectionRow<Index, IndexRow>: UMIndexProtocol {
     public let value: UMSection<Index, IndexRow>?
     public let row: UMRow<IndexRow>
 
+    @inlinable
     public init(_ section: UMSection<Index, IndexRow>, row: UMRow<IndexRow>) {
         self.value = section
         self.row = row
     }
 
+    @inline(__always) @inlinable
     public var indexPath: UMIndexPath {
-        return self.row.indexPath
+        self.row.indexPath
     }
 
+    @inline(__always) @inlinable
     public var isSelected: Bool {
-        return self.row.isSelected
+        self.row.isSelected
     }
 
+    @inlinable
     public func select(_ isSelected: Bool) -> UMSectionRow<Index, IndexRow> {
-        return UMSectionRow(self.item, row: self.row.select(isSelected))
+        UMSectionRow(self.item, row: self.row.select(isSelected))
     }
 
+    @inlinable
     public init() {
         self.value = nil
         self.row = .empty
@@ -79,6 +88,7 @@ final public class UMSectionRow<Index, IndexRow>: UMIndexProtocol {
 }
 
 extension UMSectionRow where IndexRow: Equatable {
+    @inlinable
     public var isFirst: Bool {
         guard let first = self.item.items.first else {
             return self.indexPath.row == 0
@@ -91,6 +101,7 @@ extension UMSectionRow where IndexRow: Equatable {
         return first == value
     }
 
+    @inlinable
     public var isLast: Bool {
         guard let last = self.item.items.last else {
             return self.indexPath.row == self.item.items.count - 1
@@ -113,21 +124,25 @@ public protocol SectionDataSource {
 }
 
 public extension SectionDataSource {
+    @inline(__always) @inlinable
     var asSection: UMSection<Self, Item> {
-        return .init(self, items: self.items)
+        .init(self, items: self.items)
     }
 
+    @inline(__always) @inlinable
     func asSection(with index: Int) -> UMSection<Self, Item> {
-        return .init(self, items: self.items, section: index)
+        .init(self, items: self.items, section: index)
     }
 }
 
 public extension Array where Element: SectionDataSource {
+    @inline(__always) @inlinable
     func asSection() -> [UMSection<Element, Element.Item>] {
-        return self.enumerated().compactMap { $0.1.asSection(with: $0.0) }
+        self.enumerated().compactMap { $0.1.asSection(with: $0.0) }
     }
 
+    @inline(__always) @inlinable
     func asSectionRow() -> [[UMSectionRow<Element, Element.Item>]] {
-        return self.asSection().compactMap { $0.asSectionRows }
+        self.asSection().compactMap { $0.asSectionRows }
     }
 }

@@ -20,23 +20,31 @@
 // THE SOFTWARE.
 //
 
-import Foundation
+import SwiftUI
 
-public protocol ColorType: RawRepresentable, ColorFactoryType where RawValue == String, Color == Self {
+extension Menu {
+    public struct PresentView<Destination>: View where Destination: View {
+        @State private var isPresenting: Bool = false
 
-}
+        private let destination: (Binding<Bool>) -> Destination
+        private let content: (Binding<Bool>) -> AnyView
 
-public extension ColorType {
-    @inline(__always) @inlinable
-    static var clear: ColorFactory<Color> {
-        .init(.init(red: 0, green: 0, blue: 0, alpha: 0))
-    }
-}
+        public init<Content>(destination: @escaping (Binding<Bool>) -> Destination, content: Content) where Content: View {
+            self.destination = destination
+            self.content = { isPresenting in
+                AnyView(
+                    content.onTapGesture {
+                        isPresenting.wrappedValue = true
+                    }
+                )
+            }
+        }
 
-public extension ColorType {
-    @inline(__always) @inlinable
-    var components: ColorComponents {
-        ColorFactory<Color>(self)
-            .components
+        public var body: some View {
+            content($isPresenting)
+                .sheet(isPresented: $isPresenting, content: {
+                    destination($isPresenting)
+                })
+        }
     }
 }

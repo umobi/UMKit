@@ -23,6 +23,7 @@
 import Foundation
 import SwiftUI
 
+@frozen
 public struct WindowView<Provider>: SwiftUI.View where Provider: RawWindowProvider {
     @ObservedObject private var settings: WindowSetting<Provider>
 
@@ -38,7 +39,8 @@ public struct WindowView<Provider>: SwiftUI.View where Provider: RawWindowProvid
         self.animation = editable.animation
     }
 
-    fileprivate func edit(_ edit: (Editable) -> Void) -> Self {
+    @inline(__always) @usableFromInline
+    func edit(_ edit: (Editable) -> Void) -> Self {
         let editable = Editable(self)
         edit(editable)
         return .init(self, editable: editable)
@@ -52,6 +54,7 @@ public struct WindowView<Provider>: SwiftUI.View where Provider: RawWindowProvid
 }
 
 public extension WindowView {
+    @inlinable
     func animation(_ animation: RawWindowAnimation) -> Self {
         self.edit {
             $0.animation = animation
@@ -59,8 +62,10 @@ public extension WindowView {
     }
 }
 
-fileprivate extension WindowView {
+extension WindowView {
+    @usableFromInline
     class Editable {
+        @usableFromInline
         var animation: RawWindowAnimation
 
         init(_ original: WindowView<Provider>) {

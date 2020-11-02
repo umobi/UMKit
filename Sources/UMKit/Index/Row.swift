@@ -22,18 +22,27 @@
 
 import Foundation
 
+@frozen
 public struct UMIndexPath: Equatable {
     public let row: Int
     public let section: Int
 
+    @inlinable
+    init(row: Int, section: Int) {
+        self.row = row
+        self.section = section
+    }
+
+    @inline(__always) @inlinable
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.row == rhs.row && lhs.section == rhs.section
     }
 }
 
 public extension UMIndexPath {
+    @inline(__always) @inlinable
     static var zero: UMIndexPath {
-        return .init(row: 0, section: 0)
+        .init(row: 0, section: 0)
     }
 }
 
@@ -49,43 +58,51 @@ public protocol UMIndexProtocol: Equatable {
 }
 
 public extension Equatable where Self: UMIndexProtocol {
+    @inline(__always) @inlinable
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.indexPath == rhs.indexPath
     }
 }
 
 public extension UMIndexProtocol {
+    @inline(__always) @inlinable
     var item: Index {
-        return self.value!
+        self.value!
     }
 
+    @inline(__always) @inlinable
     var isEmpty: Bool {
-        return self.value == nil
+        self.value == nil
     }
 
+    @inline(__always) @inlinable
     static var empty: Self {
-        return .init()
+        .init()
     }
 }
 
+@frozen
 public struct UMRow<Index>: UMIndexProtocol {
     public let value: Index?
     public let isSelected: Bool
 
     public let indexPath: UMIndexPath
 
+    @inlinable
     public init(_ value: Index, indexPath: UMIndexPath = .zero) {
         self.value = value
         self.isSelected = false
         self.indexPath = indexPath
     }
 
+    @inlinable
     public init(selected value: Index, indexPath: UMIndexPath = .zero) {
         self.value = value
         self.isSelected = true
         self.indexPath = indexPath
     }
 
+    @inlinable
     public func select(_ isSelected: Bool) -> UMRow<Index> {
         if isSelected {
             return UMRow(selected: self.item, indexPath: self.indexPath)
@@ -94,6 +111,7 @@ public struct UMRow<Index>: UMIndexProtocol {
         return UMRow(self.item, indexPath: self.indexPath)
     }
 
+    @inlinable
     public init() {
         self.value = nil
         self.isSelected = false

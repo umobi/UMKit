@@ -26,6 +26,7 @@ import SwiftUI
 #if os(iOS) || os(tvOS)
 import UIKit
 
+@frozen
 public struct Container<UIViewControllerType>: UIViewControllerRepresentable where UIViewControllerType: UIViewController {
 
     private let content: () -> UIViewControllerType
@@ -44,6 +45,7 @@ public struct Container<UIViewControllerType>: UIViewControllerRepresentable whe
 #elseif os(macOS)
 import AppKit
 
+@frozen
 public struct Container<NSViewControllerType>: NSViewControllerRepresentable where NSViewControllerType: NSViewController {
 
     private let content: () -> NSViewControllerType

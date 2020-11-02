@@ -29,6 +29,7 @@ protocol FontStyleSized {
 
 #if os(iOS)
 extension Font.TextStyle: FontStyleSized {
+    @inlinable
     public var baseSize: CGFloat {
         switch self {
         case .largeTitle:
@@ -62,6 +63,7 @@ extension Font.TextStyle: FontStyleSized {
 
 #if os(tvOS)
 extension Font.TextStyle: FontStyleSized {
+    @inlinable
     public var baseSize: CGFloat {
         switch self {
         case .title:
@@ -93,6 +95,7 @@ extension Font.TextStyle: FontStyleSized {
 
 #if os(watchOS)
 extension Font.TextStyle: FontStyleSized {
+    @inlinable
     public var baseSize: CGFloat {
         switch self {
         case .largeTitle:
@@ -126,6 +129,7 @@ extension Font.TextStyle: FontStyleSized {
 
 #if os(macOS)
 extension Font.TextStyle: FontStyleSized {
+    @inlinable
     public var baseSize: CGFloat {
         switch self {
         case .largeTitle:

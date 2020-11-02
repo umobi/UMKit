@@ -23,6 +23,7 @@
 import Foundation
 import SwiftUI
 
+@frozen
 public struct FontFrozen {
     public let fontType: String
     public let weight: Font.Weight?

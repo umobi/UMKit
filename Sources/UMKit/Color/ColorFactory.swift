@@ -1,8 +1,23 @@
 //
-//  ColorFactory.swift
-//  UMKit
+// Copyright (c) 2019-Present Umobi - https://github.com/umobi
 //
-//  Created by brennobemoura on 16/04/20.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 //
 
 import Foundation
@@ -13,6 +28,7 @@ import AppKit
 import UIKit
 #endif
 
+@frozen
 public struct ColorFactory<Color: ColorType>: ColorFactoryType {
     let alpha: CGFloat
     let red: CGFloat
@@ -23,6 +39,7 @@ public struct ColorFactory<Color: ColorType>: ColorFactoryType {
     let darkColor: ColorComponents?
     #endif
 
+    @usableFromInline
     init(_ color: Color) {
         guard let components = ColorComponents.component(from: color.rawValue) else {
             fatalError()
@@ -37,6 +54,7 @@ public struct ColorFactory<Color: ColorType>: ColorFactoryType {
         #endif
     }
 
+    @usableFromInline
     init(_ components: ColorComponents) {
         self.alpha = components.alpha
         self.red = components.red
@@ -57,18 +75,22 @@ public struct ColorFactory<Color: ColorType>: ColorFactoryType {
         #endif
     }
 
-    fileprivate func edit(_ edit: @escaping (Editable) -> Void) -> Self {
-        let editable = Editable(self)
-        edit(editable)
-        return .init(self, editable: editable)
-    }
-
-    fileprivate class Editable {
+    @usableFromInline
+    class Editable {
+        @usableFromInline
         var alpha: CGFloat
+
+        @usableFromInline
         var red: CGFloat
+
+        @usableFromInline
         var green: CGFloat
+
+        @usableFromInline
         var blue: CGFloat
+
         #if !os(watchOS)
+        @usableFromInline
         var darkColor: ColorComponents?
         #endif
 
@@ -82,9 +104,17 @@ public struct ColorFactory<Color: ColorType>: ColorFactoryType {
             #endif
         }
     }
+
+    @inline(__always) @usableFromInline
+    func edit(_ edit: (Editable) -> Void) -> Self {
+        let editable = Editable(self)
+        edit(editable)
+        return .init(self, editable: editable)
+    }
 }
 
 public extension ColorFactory {
+    @inlinable
     func alpha(_ alpha: CGFloat) -> Self {
         self.edit {
             $0.alpha = alpha
@@ -102,18 +132,21 @@ public extension ColorFactory {
         }
     }
 
+    @inlinable
     func red(_ red: CGFloat) -> ColorFactory<Color> {
         self.edit {
             $0.red = red / 255.0
         }
     }
 
+    @inlinable
     func green(_ green: CGFloat) -> ColorFactory<Color> {
         self.edit {
             $0.green = green / 255.0
         }
     }
 
+    @inlinable
     func blue(_ blue: CGFloat) -> ColorFactory<Color> {
         self.edit {
             $0.blue = blue / 255.0
@@ -124,18 +157,21 @@ public extension ColorFactory {
 #if os(tvOS) || os(iOS) || os(macOS)
 public extension ColorFactory {
 
+    @inlinable
     func darkColor(_ color: Color) -> ColorFactory<Color> {
         self.edit {
             $0.darkColor = ColorFactory(color).components
         }
     }
 
+    @inlinable
     func darkColor<DarkColor: ColorType>(_ color: DarkColor) -> ColorFactory<Color> {
         self.edit {
             $0.darkColor = ColorFactory<DarkColor>(color).components
         }
     }
 
+    @inlinable
     func darkColor<Factory: ColorFactoryType>(_ factory: Factory) -> ColorFactory<Color> {
         self.edit {
             $0.darkColor = factory.components
@@ -145,16 +181,19 @@ public extension ColorFactory {
 
 public extension ColorFactory {
 
+    @inlinable
     func lightColor(_ color: Color) -> ColorFactory<Color> {
         ColorFactory<Color>(color.components)
             .darkColor(self)
     }
 
+    @inlinable
     func lightColor<LightColor>(_ color: LightColor) -> ColorFactory<LightColor> where LightColor: ColorType {
         ColorFactory<LightColor>(color.components)
             .darkColor(self)
     }
 
+    @inlinable
     func lightColor<Factory>(_ factory: Factory) -> ColorFactory<Factory.Color> where Factory: ColorFactoryType {
         ColorFactory<Factory.Color>(factory.components)
             .darkColor(self)
@@ -163,6 +202,7 @@ public extension ColorFactory {
 #endif
 
 public extension ColorFactory {
+    @inlinable
     func lighter(_ constant: CGFloat) -> ColorFactory<Color> {
         let components = self.components.lighter(with: constant)
 
@@ -173,6 +213,7 @@ public extension ColorFactory {
         }
     }
 
+    @inlinable
     func darker(_ constant: CGFloat) -> ColorFactory<Color> {
         let components = self.components.darker(with: constant)
 

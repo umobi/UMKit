@@ -22,6 +22,7 @@
 
 import SwiftUI
 
+@frozen
 public enum UMDividerDirection {
     case top
     case left
@@ -29,6 +30,7 @@ public enum UMDividerDirection {
     case bottom
 }
 
+@frozen
 public struct UMDividerPadding {
     let leftOrTop: CGFloat
     let rightOrBottom: CGFloat
@@ -38,6 +40,7 @@ public struct UMDividerPadding {
         self.rightOrBottom = rightOrBottom
     }
 
+    @inline(__always)
     static var zero: UMDividerPadding {
         .init(.zero, .zero)
     }
@@ -59,36 +62,33 @@ private struct UMDivider<Content>: View where Content: View {
         self.height = height
     }
 
-    var verticalColor: AnyView {
-        AnyView(
-            self.color
-                .frame(width: self.height, height: .infinity)
-                .padding(
-                    EdgeInsets(
-                        top: self.padding.leftOrTop,
-                        leading: .zero,
-                        bottom: self.padding.rightOrBottom,
-                        trailing: .zero
-                    )
+    var verticalColor: some View {
+        self.color
+            .frame(width: self.height, height: .infinity)
+            .padding(
+                EdgeInsets(
+                    top: self.padding.leftOrTop,
+                    leading: .zero,
+                    bottom: self.padding.rightOrBottom,
+                    trailing: .zero
                 )
-        )
+            )
     }
 
-    var horizontalColor: AnyView {
-        AnyView(
-            self.color
-                .padding(
-                    EdgeInsets(
-                        top: .zero,
-                        leading: self.padding.leftOrTop,
-                        bottom: .zero,
-                        trailing: self.padding.rightOrBottom
-                    )
+    var horizontalColor: some View {
+        self.color
+            .padding(
+                EdgeInsets(
+                    top: .zero,
+                    leading: self.padding.leftOrTop,
+                    bottom: .zero,
+                    trailing: self.padding.rightOrBottom
                 )
-                .frame(maxWidth: .infinity, idealHeight: self.height)
-        )
+            )
+            .frame(maxWidth: .infinity, idealHeight: self.height)
     }
 
+    @ViewBuilder
     var body: some View {
         switch self.direction {
         case .top, .bottom:
@@ -146,19 +146,23 @@ private extension UMDividerDirection {
 }
 
 public extension View {
-    func umDivider(color: Color, direction: UMDividerDirection) -> AnyView {
-        AnyView(UMDivider(color, direction, .zero, 1, { self }))
+    @inline(__always)
+    func umDivider(color: Color, direction: UMDividerDirection) -> some View {
+        UMDivider(color, direction, .zero, 1, { self })
     }
 
-    func umDivider(color: Color, height: CGFloat, direction: UMDividerDirection) -> AnyView {
-        AnyView(UMDivider(color, direction, .zero, height, { self }))
+    @inline(__always)
+    func umDivider(color: Color, height: CGFloat, direction: UMDividerDirection) -> some View {
+        UMDivider(color, direction, .zero, height, { self })
     }
 
-    func umDivider(color: Color, direction: UMDividerDirection, padding: UMDividerPadding) -> AnyView {
-        AnyView(UMDivider(color, direction, padding, 1, { self }))
+    @inline(__always)
+    func umDivider(color: Color, direction: UMDividerDirection, padding: UMDividerPadding) -> some View {
+        UMDivider(color, direction, padding, 1, { self })
     }
 
-    func umDivider(color: Color, height: CGFloat, direction: UMDividerDirection, padding: UMDividerPadding) -> AnyView {
-        AnyView(UMDivider(color, direction, padding, height, { self }))
+    @inline(__always)
+    func umDivider(color: Color, height: CGFloat, direction: UMDividerDirection, padding: UMDividerPadding) -> some View {
+        UMDivider(color, direction, padding, height, { self })
     }
 }

@@ -24,5 +24,7 @@ import Foundation
 import SwiftUI
 
 public protocol RawWindowProvider {
-    var view: AnyView { get }
+    associatedtype Content: View
+    
+    var view: Content { get }
 }

@@ -1,19 +1,36 @@
 //
-//  ColorComponents.swift
-//  UMKit
+// Copyright (c) 2019-Present Umobi - https://github.com/umobi
 //
-//  Created by brennobemoura on 16/04/20.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 //
 
 import Foundation
 import SwiftUI
 
+@frozen
 public struct ColorComponents {
     public let red: CGFloat
     public let green: CGFloat
     public let blue: CGFloat
     public let alpha: CGFloat
 
+    @inlinable
     public init(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
         self.red = red
         self.green = green
@@ -21,25 +38,29 @@ public struct ColorComponents {
         self.alpha = alpha
     }
 
+    @inlinable
     public var hex: String {
-        return "#" + ([self.red, self.green, self.blue, self.alpha].reduce("") {
+        [red, green, blue, alpha].reduce("#") {
             $0 + String(format: "%02X", Int($1*255))
-        })
+        }
     }
 
+    @inline(__always) @inlinable
     public var isGrayScale: Bool {
-        return self.red == self.green && self.green == self.blue
+        self.red == self.green && self.green == self.blue
     }
 }
 
 public extension ColorComponents {
     // swiftlint:disable large_tuple
+    @inline(__always)
     private var maxColorInterval: (red: CGFloat, green: CGFloat, blue: CGFloat) {
-        return (1 - self.red, 1 - self.green, 1 - self.blue)
+        (1 - self.red, 1 - self.green, 1 - self.blue)
     }
 
     func lighter(with constant: CGFloat) -> ColorComponents {
         let max = self.maxColorInterval
+
         return .init(
             red: self.red + (max.red * constant),
             green: self.green + (max.green * constant),
@@ -48,8 +69,9 @@ public extension ColorComponents {
         )
     }
 
+    @inlinable
     func darker(with constant: CGFloat) -> ColorComponents {
-        return .init(
+        .init(
             red: self.red - (self.red * constant),
             green: self.green - (self.green * constant),
             blue: self.blue - (self.blue * constant),
@@ -57,12 +79,14 @@ public extension ColorComponents {
         )
     }
 
+    @inline(__always) @inlinable
     func alpha(constant alpha: CGFloat) -> ColorComponents {
-        return .init(red: self.red, green: self.green, blue: self.blue, alpha: alpha)
+        .init(red: self.red, green: self.green, blue: self.blue, alpha: alpha)
     }
 }
 
 public extension ColorComponents {
+    @inlinable
     static func component(from hex: String) -> ColorComponents? {
         guard hex.hasPrefix("#") && hex.count >= 7 else {
             return nil
@@ -113,6 +137,7 @@ public extension ColorComponents {
         return .init(red: components.red, green: components.green, blue: components.blue, alpha: alpha)
     }
 
+    @inlinable
     init?(hex: String) {
         guard let component = Self.component(from: hex) else {
             return nil

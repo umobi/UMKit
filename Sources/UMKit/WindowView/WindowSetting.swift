@@ -36,19 +36,3 @@ public class WindowSetting<Provider>: ObservableObject where Provider: RawWindow
         }
     }
 }
-
-public struct CrossFadeWindowAnimation: RawWindowAnimation {
-    public func animate(_ view: AnyView) -> AnyView {
-        AnyView(
-            view
-                .transition(.opacity)
-                .animation(.easeInOut)
-        )
-    }
-}
-
-public extension RawWindowAnimation {
-    static var easeInOut: CrossFadeWindowAnimation {
-        .init()
-    }
-}

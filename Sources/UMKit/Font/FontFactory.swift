@@ -29,6 +29,7 @@ import AppKit
 import UIKit
 #endif
 
+@frozen
 public struct FontFactory<Font: FontType> {
     let fontType: Font
 
@@ -38,6 +39,7 @@ public struct FontFactory<Font: FontType> {
     let bundle: Bundle?
     let filename: String?
 
+    @usableFromInline
     init(font: Font) {
         self.fontType = font
         self.style = nil
@@ -56,11 +58,21 @@ public struct FontFactory<Font: FontType> {
         self.filename = editable.filename
     }
 
-    private class Editable {
+    @usableFromInline
+    class Editable {
+        @usableFromInline
         var weight: SwiftUI.Font.Weight?
+
+        @usableFromInline
         var style: SwiftUI.Font.TextStyle?
+
+        @usableFromInline
         var size: CGFloat?
+
+        @usableFromInline
         var bundle: Bundle?
+
+        @usableFromInline
         var filename: String?
 
         init(_ maker: FontFactory<Font>) {
@@ -72,36 +84,42 @@ public struct FontFactory<Font: FontType> {
         }
     }
 
-    private func edit(_ edit: @escaping (Editable) -> Void) -> Self {
+    @inline(__always) @usableFromInline
+    func edit(_ edit: (Editable) -> Void) -> Self {
         let editable = Editable(self)
         edit(editable)
         return .init(self, editable: editable)
     }
 
+    @inlinable
     public func style(_ style: SwiftUI.Font.TextStyle) -> Self {
         self.edit {
             $0.style = style
         }
     }
 
+    @inlinable
     public func size(_ size: CGFloat) -> Self {
         self.edit {
             $0.size = size
         }
     }
 
+    @inlinable
     public func weight(_ weight: SwiftUI.Font.Weight) -> Self {
         self.edit {
             $0.weight = weight
         }
     }
 
+    @inlinable
     public func bundle(_ bundle: Bundle) -> Self {
         self.edit {
             $0.bundle = bundle
         }
     }
 
+    @inlinable
     public func filename(_ name: String) -> Self {
         self.edit {
             $0.filename = name
@@ -136,8 +154,10 @@ extension FontFactory {
         let name = fontName(self.fontType, weight: self.weight)
 
         if let style = self.style {
-            if #available(iOS 14, tvOS 14, watchOS 7, macOS 11, *) {
+            if #available(iOS 14, tvOS 14, watchOS 7, *) {
+                #if os(iOS) || os(tvOS) || os(watchOS)
                 return .custom(name, size: style.baseSize, relativeTo: style)
+                #endif
             }
 
             return .custom(name, size: style.baseSize)
@@ -162,6 +182,6 @@ func fontName<Font: FontType>(_ font: Font, weight: SwiftUI.Font.Weight?) -> Str
 
 extension String {
     func capitalizingFirstLetter() -> String {
-        return prefix(1).uppercased() + self.lowercased().dropFirst()
+        prefix(1).uppercased() + lowercased().dropFirst()
     }
 }

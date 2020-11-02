@@ -24,5 +24,5 @@ import Foundation
 import SwiftUI
 
 public protocol RawWindowAnimation {
-    func animate(_ view: AnyView) -> AnyView
+    func animate<Content>(_ view: Content) -> AnyView where Content: View
 }

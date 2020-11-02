@@ -32,17 +32,20 @@ public protocol FontType: RawRepresentable where RawValue == String {
 }
 
 extension FontType {
+    @inline(__always)
     var fontName: String {
         "\(type(of: self))"
     }
 }
 
 public extension FontType {
+    @inlinable
     func style(_ style: Font.TextStyle) -> FontFactory<Self> {
         FontFactory(font: self)
             .style(style)
     }
 
+    @inlinable
     func size(_ size: CGFloat) -> FontFactory<Self> {
         FontFactory(font: self)
             .size(size)

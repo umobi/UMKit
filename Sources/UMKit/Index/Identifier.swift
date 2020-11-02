@@ -23,17 +23,20 @@
 import SwiftUI
 
 public extension Hashable where Self: Identifiable {
+    @inline(__always) @inlinable
     func hash(into hasher: inout Hasher) {
         hasher.combine(self.id)
     }
 
+    @inline(__always) @inlinable
     static func == <Right: Identifiable>(_ left: Self, _ right: Right) -> Bool where ID == Right.ID {
         left.id == right.id
     }
 }
 
 public extension Array where Element: Identifiable & Hashable {
+    @inline(__always) @inlinable
     var unique: [Element] {
-        return Array(Set(self))
+        Array(Set(self))
     }
 }

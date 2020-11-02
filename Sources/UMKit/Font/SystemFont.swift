@@ -22,6 +22,7 @@
 
 import SwiftUI
 
+@frozen
 public enum SystemFont: String, FontType {
     case bold
     case regular

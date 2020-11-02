@@ -21,22 +21,26 @@
 //
 
 import Foundation
+import SwiftUI
 
-public protocol ColorType: RawRepresentable, ColorFactoryType where RawValue == String, Color == Self {
-
-}
-
-public extension ColorType {
+@frozen
+public struct CrossFadeWindowAnimation: RawWindowAnimation {
     @inline(__always) @inlinable
-    static var clear: ColorFactory<Color> {
-        .init(.init(red: 0, green: 0, blue: 0, alpha: 0))
+    public init() {}
+
+    @inlinable
+    public func animate<Content>(_ view: Content) -> AnyView where Content : View {
+        AnyView(
+            view
+                .transition(.opacity)
+                .animation(.easeInOut)
+        )
     }
 }
 
-public extension ColorType {
+public extension RawWindowAnimation {
     @inline(__always) @inlinable
-    var components: ColorComponents {
-        ColorFactory<Color>(self)
-            .components
+    static var easeInOut: CrossFadeWindowAnimation {
+        .init()
     }
 }
