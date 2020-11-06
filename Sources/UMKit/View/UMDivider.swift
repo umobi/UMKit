@@ -32,16 +32,20 @@ public enum UMDividerDirection {
 
 @frozen
 public struct UMDividerPadding {
+    @usableFromInline
     let leftOrTop: CGFloat
+    
+    @usableFromInline
     let rightOrBottom: CGFloat
 
-    init(_ leftOrTop: CGFloat, _ rightOrBottom: CGFloat) {
+    @inlinable
+    public init(_ leftOrTop: CGFloat, _ rightOrBottom: CGFloat) {
         self.leftOrTop = leftOrTop
         self.rightOrBottom = rightOrBottom
     }
 
-    @inline(__always)
-    static var zero: UMDividerPadding {
+    @inline(__always) @inlinable
+    public static var zero: UMDividerPadding {
         .init(.zero, .zero)
     }
 }
@@ -64,7 +68,8 @@ private struct UMDivider<Content>: View where Content: View {
 
     var verticalColor: some View {
         self.color
-            .frame(width: self.height, height: .infinity)
+            .frame(maxHeight: .infinity)
+            .frame(width: self.height)
             .padding(
                 EdgeInsets(
                     top: self.padding.leftOrTop,
@@ -85,7 +90,8 @@ private struct UMDivider<Content>: View where Content: View {
                     trailing: self.padding.rightOrBottom
                 )
             )
-            .frame(maxWidth: .infinity, idealHeight: self.height)
+            .frame(maxWidth: .infinity)
+            .frame(height: self.height)
     }
 
     @ViewBuilder
@@ -147,22 +153,22 @@ private extension UMDividerDirection {
 
 public extension View {
     @inline(__always)
-    func umDivider(color: Color, direction: UMDividerDirection) -> some View {
+    func divider(color: Color, direction: UMDividerDirection) -> some View {
         UMDivider(color, direction, .zero, 1, { self })
     }
 
     @inline(__always)
-    func umDivider(color: Color, height: CGFloat, direction: UMDividerDirection) -> some View {
+    func divider(color: Color, height: CGFloat, direction: UMDividerDirection) -> some View {
         UMDivider(color, direction, .zero, height, { self })
     }
 
     @inline(__always)
-    func umDivider(color: Color, direction: UMDividerDirection, padding: UMDividerPadding) -> some View {
+    func divider(color: Color, direction: UMDividerDirection, padding: UMDividerPadding) -> some View {
         UMDivider(color, direction, padding, 1, { self })
     }
 
     @inline(__always)
-    func umDivider(color: Color, height: CGFloat, direction: UMDividerDirection, padding: UMDividerPadding) -> some View {
+    func divider(color: Color, height: CGFloat, direction: UMDividerDirection, padding: UMDividerPadding) -> some View {
         UMDivider(color, direction, padding, height, { self })
     }
 }

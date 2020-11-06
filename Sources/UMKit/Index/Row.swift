@@ -28,7 +28,7 @@ public struct UMIndexPath: Equatable {
     public let section: Int
 
     @inlinable
-    init(row: Int, section: Int) {
+    public init(row: Int, section: Int) {
         self.row = row
         self.section = section
     }
