@@ -22,7 +22,7 @@
 
 import SwiftUI
 
-extension Menu {
+extension UMMenu {
     public struct PresentView<Destination>: View where Destination: View {
         @State private var isPresenting: Bool = false
 
@@ -32,21 +32,15 @@ extension Menu {
         public init<Content>(destination: @escaping (Binding<Bool>) -> Destination, content: Content) where Content: View {
             self.destination = destination
             self.content = { isPresenting in
-                {
-                    #if !os(tvOS)
-                    return AnyView(content.onTapGesture {
-                        isPresenting.wrappedValue = true
-                    })
-                    #else
-                    return AnyView(content)
-                    #endif
-                }()
+                AnyView(Button(action: { isPresenting.wrappedValue = true }) {
+                    content
+                })
             }
         }
 
         public var body: some View {
             content($isPresenting)
-                .sheet(isPresented: $isPresenting, content: {
+                .um_sheet(isPresented: $isPresenting, content: {
                     destination($isPresenting)
                 })
         }

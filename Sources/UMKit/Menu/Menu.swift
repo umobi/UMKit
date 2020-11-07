@@ -23,11 +23,15 @@
 import SwiftUI
 
 @frozen
-public struct Menu: Equatable {
+public struct UMMenu: Equatable {
     public let image: Image?
     public let title: Text?
-    private let modifierHandler: ((AnyView) -> AnyView)?
-    private let isAvailableHandler: (() -> Bool)?
+
+    @usableFromInline
+    var modifierHandler: ((AnyView) -> AnyView)?
+
+    @usableFromInline
+    var isAvailableHandler: (() -> Bool)?
 
     @inline(__always)
     public var isAvailable: Bool {
@@ -55,40 +59,21 @@ public struct Menu: Equatable {
         self.isAvailableHandler = nil
     }
 
-    private init(_ original: Menu,_ editable: Editable) {
-        self.title = original.title
-        self.image = original.image
-        self.modifierHandler = editable.modifierHandler
-        self.isAvailableHandler = {
-            (original.isAvailableHandler?() ?? true) && (editable.isAvailableHandler?() ?? true)
-        }
-    }
-
-    @usableFromInline
-    class Editable {
-        @usableFromInline
-        var modifierHandler: ((AnyView) -> AnyView)?
-
-        @usableFromInline
-        var isAvailableHandler: (() -> Bool)?
-
-        init(_ original: Menu) {
-            self.isAvailableHandler = original.isAvailableHandler
-            self.modifierHandler = original.modifierHandler
-        }
-    }
-
     @inline(__always) @usableFromInline
-    func edit(_ edit: (Editable) -> Void) -> Self {
-        let editable = Editable(self)
-        edit(editable)
-        return .init(self, editable)
+    func edit(_ edit: (inout Self) -> Void) -> Self {
+        var mutableSelf = self
+        edit(&mutableSelf)
+        return mutableSelf
     }
+}
 
+public extension UMMenu {
     @inlinable
     func isAvailable(_ handler: @escaping () -> Bool) -> Self {
         self.edit {
-            $0.isAvailableHandler = handler
+            $0.isAvailableHandler = {
+                (self.isAvailableHandler?() ?? true) && handler()
+            }
         }
     }
 
@@ -108,9 +93,9 @@ public struct Menu: Equatable {
     }
 }
 
-extension Menu {
+public extension UMMenu {
     @inline(__always) @inlinable
-    public static func ==(_ lhs: Menu, _ rhs: Menu) -> Bool {
+    static func ==(_ lhs: UMMenu, _ rhs: UMMenu) -> Bool {
         lhs.title == rhs.title && lhs.image == rhs.image
     }
 }

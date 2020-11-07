@@ -23,7 +23,7 @@
 import SwiftUI
 
 #if !os(tvOS)
-extension Menu {
+extension UMMenu {
     public struct PushView<Destination>: View where Destination: View {
         @State private var isPushing: Bool = false
 
