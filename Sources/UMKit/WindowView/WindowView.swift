@@ -27,23 +27,18 @@ import SwiftUI
 public struct WindowView<Provider>: SwiftUI.View where Provider: RawWindowProvider {
     @ObservedObject private var settings: WindowSetting<Provider>
 
-    private let animation: RawWindowAnimation
+    fileprivate var animation: RawWindowAnimation
 
     public init(_ provider: Provider) {
         self.settings = .init(provider)
         self.animation = CrossFadeWindowAnimation()
     }
 
-    private init(_ original: WindowView<Provider>, editable: Editable) {
-        self.settings = original.settings
-        self.animation = editable.animation
-    }
-
     @inline(__always) @usableFromInline
-    func edit(_ edit: (Editable) -> Void) -> Self {
-        let editable = Editable(self)
-        edit(editable)
-        return .init(self, editable: editable)
+    func edit(_ edit: (inout Self) -> Void) -> Self {
+        var mutableSelf = self
+        edit(&mutableSelf)
+        return mutableSelf
     }
 
     public var body: some SwiftUI.View {
@@ -54,22 +49,9 @@ public struct WindowView<Provider>: SwiftUI.View where Provider: RawWindowProvid
 }
 
 public extension WindowView {
-    @inlinable
     func animation(_ animation: RawWindowAnimation) -> Self {
-        self.edit {
+        edit {
             $0.animation = animation
-        }
-    }
-}
-
-extension WindowView {
-    @usableFromInline
-    class Editable {
-        @usableFromInline
-        var animation: RawWindowAnimation
-
-        init(_ original: WindowView<Provider>) {
-            self.animation = original.animation
         }
     }
 }
