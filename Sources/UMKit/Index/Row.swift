@@ -22,34 +22,21 @@
 
 import Foundation
 
-@frozen
-public struct UMIndexPath: Equatable {
-    public let row: Int
-    public let section: Int
+#if os(macOS)
 
-    @inlinable
-    public init(row: Int, section: Int) {
-        self.row = row
-        self.section = section
-    }
-
+#else
+public extension IndexPath {
     @inline(__always) @inlinable
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.row == rhs.row && lhs.section == rhs.section
+    static var zero: IndexPath {
+        .init(row: .zero, section: .zero)
     }
 }
-
-public extension UMIndexPath {
-    @inline(__always) @inlinable
-    static var zero: UMIndexPath {
-        .init(row: 0, section: 0)
-    }
-}
+#endif
 
 public protocol UMIndexProtocol: Equatable {
     associatedtype Index
     var value: Index? { get }
-    var indexPath: UMIndexPath { get }
+    var indexPath: IndexPath { get }
     var isSelected: Bool { get }
 
     func select(_ isSelected: Bool) -> Self
@@ -86,17 +73,17 @@ public struct UMRow<Index>: UMIndexProtocol {
     public let value: Index?
     public let isSelected: Bool
 
-    public let indexPath: UMIndexPath
+    public let indexPath: IndexPath
 
     @inlinable
-    public init(_ value: Index, indexPath: UMIndexPath = .zero) {
+    public init(_ value: Index, indexPath: IndexPath = .zero) {
         self.value = value
         self.isSelected = false
         self.indexPath = indexPath
     }
 
     @inlinable
-    public init(selected value: Index, indexPath: UMIndexPath = .zero) {
+    public init(selected value: Index, indexPath: IndexPath = .zero) {
         self.value = value
         self.isSelected = true
         self.indexPath = indexPath

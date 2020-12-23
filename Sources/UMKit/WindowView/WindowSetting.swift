@@ -31,8 +31,10 @@ public class WindowSetting<Provider>: ObservableObject where Provider: RawWindow
     }
 
     public func transition(to newProvider: Provider) {
-        withAnimation {
-            self.provider = newProvider
+        OperationQueue.main.addOperation {
+            withAnimation {
+                self.provider = newProvider
+            }
         }
     }
 }

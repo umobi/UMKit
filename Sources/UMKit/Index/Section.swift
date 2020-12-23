@@ -66,7 +66,7 @@ public struct UMSectionRow<Index, IndexRow>: UMIndexProtocol {
     }
 
     @inline(__always) @inlinable
-    public var indexPath: UMIndexPath {
+    public var indexPath: IndexPath {
         self.row.indexPath
     }
 
